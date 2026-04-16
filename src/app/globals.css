@@ -1,0 +1,96 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+  --brand: #00e6a0;
+  --brand-dark: #00cc8e;
+  --dark-bg: #0a0c10;
+  --dark-card: #13161b;
+  --dark-border: #1e2128;
+  --dark-hover: #2a2d35;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--dark-bg);
+  color: #e2e8f0;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--dark-bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--dark-border);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--dark-hover);
+}
+
+/* Selection */
+::selection {
+  background: rgba(0, 230, 160, 0.3);
+}
+
+/* Glass effect */
+.glass {
+  background: rgba(19, 22, 27, 0.8);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(30, 33, 40, 0.6);
+}
+
+/* Glow effect */
+.glow-brand {
+  box-shadow: 0 0 20px rgba(0, 230, 160, 0.15);
+}
+
+/* Card animation */
+.card-hover {
+  transition: all 0.2s ease;
+}
+.card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+/* Pulse for notifications */
+@keyframes pulse-brand {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+.pulse-brand {
+  animation: pulse-brand 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Loading spinner */
+.spinner {
+  border: 3px solid var(--dark-border);
+  border-top: 3px solid var(--brand);
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Status badges */
+.status-active { color: #00e6a0; }
+.status-paused { color: #f59e0b; }
+.status-error { color: #ef4444; }
+.status-pending { color: #3b82f6; }
