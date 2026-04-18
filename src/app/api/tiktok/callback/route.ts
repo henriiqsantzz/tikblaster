@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from 'next/server';
 import { TikTokApi } from '@/lib/tiktok-api';
-import { createServiceSupabase } from '@/lib/supabase-server';
+import { createServerSupabase, createServiceSupabase } from '@/lib/supabase-server';
 import { cookies } from 'next/headers';
 
 export async function GET(request: NextRequest) {
@@ -40,15 +40,18 @@ export async function GET(request: NextRequest) {
     // Exchange code for access token
     const { access_token, advertiser_ids } = await TikTokApi.getAccessToken(code);
 
-    // Get user from session
-    const supabase = createServiceSupabase();
-    const { data: { session } } = await supabase.auth.getSession();
+    // Get user from session using cookie-based client
+    const serverSupabase = createServerSupabase();
+    const { data: { session } } = await serverSupabase.auth.getSession();
 
     if (!session) {
       return NextResponse.redirect(
         `${process.env.NEXT_PUBLIC_APP_URL}/login`
       );
     }
+
+    // Use service role client for database writes (bypasses RLS)
+    const supabase = createServiceSupabase();
 
     // Get BC info and store credentials
     const api = new TikTokApi(access_token);
