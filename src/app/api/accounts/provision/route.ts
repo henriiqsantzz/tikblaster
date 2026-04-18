@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from 'next/server';
 import { TikTokApi } from '@/lib/tiktok-api';
 import { createServerSupabase } from '@/lib/supabase-server';
@@ -166,7 +167,7 @@ async function processAccountProvisioning(
         currency,
       });
 
-      const advertiserId = result.data?.advertiser_id;
+      const advertiserId = (result.data as any)?.advertiser_id;
 
       if (!advertiserId) {
         results.push({

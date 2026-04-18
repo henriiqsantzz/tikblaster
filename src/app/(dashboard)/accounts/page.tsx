@@ -1,248 +1,143 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Card, Input, Select, Button, TextArea } from '@/components/ui';
-import { Building2, User, Phone, Mail, Hash } from 'lucide-react';
+import { Card, Input, Select, Button } from '@/components/ui';
+import { Building2, User, Phone, Mail, Hash, AlertTriangle } from 'lucide-react';
+import { useAppStore } from '@/store/app-store';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import toast from 'react-hot-toast';
 
 export default function AccountsPage() {
+  const router = useRouter();
+  const { activeBC } = useAppStore();
   const [formData, setFormData] = useState({
-    companyName: '',
-    cnpj: '',
-    industryId: '',
-    contactName: '',
-    contactEmail: '',
-    contactPhone: '',
-    quantity: 1,
-    namePrefix: 'ACC',
+    companyName: '', cnpj: '', industryId: '', contactName: '',
+    contactEmail: '', contactPhone: '', quantity: 1, namePrefix: 'ACC',
   });
-
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
-  ) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    // Validation
-    if (!formData.companyName.trim()) {
-      toast.error('Nome da empresa é obrigatório');
-      return;
-    }
-    if (!formData.contactName.trim()) {
-      toast.error('Nome do contato é obrigatório');
-      return;
-    }
-    if (!formData.contactEmail.trim()) {
-      toast.error('Email do contato é obrigatório');
-      return;
-    }
-    if (!formData.contactPhone.trim()) {
-      toast.error('Telefone do contato é obrigatório');
-      return;
-    }
-    if (formData.quantity < 1 || formData.quantity > 100) {
-      toast.error('Quantidade deve estar entre 1 e 100');
-      return;
-    }
+    if (!activeBC?.bc_id) { toast.error('Selecione um Business Center'); return; }
+    if (!formData.companyName.trim()) { toast.error('Nome da empresa é obrigatório'); return; }
+    if (!formData.contactName.trim()) { toast.error('Nome do contato é obrigatório'); return; }
+    if (!formData.contactEmail.trim()) { toast.error('Email do contato é obrigatório'); return; }
+    if (!formData.contactPhone.trim()) { toast.error('Telefone do contato é obrigatório'); return; }
+    if (formData.quantity < 1 || formData.quantity > 100) { toast.error('Quantidade deve estar entre 1 e 100'); return; }
 
     setIsLoading(true);
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      toast.success(
-        `Lote de ${formData.quantity} conta(s) criada(s) com sucesso!`
-      );
-
-      setFormData({
-        companyName: '',
-        cnpj: '',
-        industryId: '',
-        contactName: '',
-        contactEmail: '',
-        contactPhone: '',
-        quantity: 1,
-        namePrefix: 'ACC',
+      const res = await fetch('/api/accounts/provision', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          bc_id: activeBC.bc_id,
+          company_name: formData.companyName,
+          cnpj: formData.cnpj || undefined,
+          industry_id: formData.industryId,
+          contact_name: formData.contactName,
+          contact_email: formData.contactEmail,
+          contact_phone: formData.contactPhone,
+          timezone: 'America/Sao_Paulo',
+          currency: 'BRL',
+          quantity: parseInt(formData.quantity as any),
+          name_prefix: formData.namePrefix,
+        }),
       });
-    } catch (error) {
-      toast.error('Erro ao criar contas');
+
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error || 'Falha ao criar contas');
+      }
+
+      const result = await res.json();
+      toast.success(`Lote criado! Job: ${result.job_id}. ${result.total_accounts} contas em processamento.`);
+      router.push('/history');
+    } catch (error: any) {
+      toast.error(error.message || 'Erro ao criar contas');
     } finally {
       setIsLoading(false);
     }
   };
 
+  if (!activeBC) {
+    return (
+      <div className="space-y-8">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-50">Criação de Contas</h1>
+          <p className="text-gray-400 mt-1">Crie contas de anunciantes em lote</p>
+        </div>
+        <Card className="text-center py-16">
+          <AlertTriangle size={48} className="mx-auto mb-4 text-yellow-400" />
+          <h2 className="text-xl font-bold text-gray-100 mb-2">Conta TikTok não conectada</h2>
+          <p className="text-gray-400 mb-6">Conecte sua conta para criar contas de anunciantes.</p>
+          <Link href="/settings"><Button size="lg">Ir para Configurações</Button></Link>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-8">
-      {/* Header */}
       <div>
         <h1 className="text-3xl font-bold text-gray-50">Criação de Contas</h1>
         <p className="text-gray-400 mt-1">Crie contas de anunciantes em lote</p>
       </div>
 
-      {/* Form Card */}
       <Card title="Novo Lote de Contas" icon={<Building2 size={24} />}>
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Business Center Info */}
           <div className="bg-dark-400/50 rounded-lg p-4 border border-dark-100">
             <p className="text-sm text-gray-400 mb-2">Business Center</p>
-            <p className="text-lg font-semibold text-gray-100">BC-2024-001</p>
-            <p className="text-xs text-gray-500 mt-1">Contexto selecionado</p>
+            <p className="text-lg font-semibold text-gray-100">{activeBC.name || activeBC.bc_id}</p>
+            <p className="text-xs text-gray-500 font-mono mt-1">{activeBC.bc_id}</p>
           </div>
 
-          {/* Company Section */}
           <div className="space-y-4">
-            <h3 className="text-sm font-semibold text-gray-200 uppercase tracking-wider">
-              Informações da Empresa
-            </h3>
-
-            <Input
-              label="Nome da Empresa"
-              name="companyName"
-              value={formData.companyName}
-              onChange={handleInputChange}
-              placeholder="Ex: Minha Empresa LTDA"
-              icon={<Building2 size={18} />}
-              required
-            />
-
-            <Input
-              label="CNPJ"
-              name="cnpj"
-              value={formData.cnpj}
-              onChange={handleInputChange}
-              placeholder="XX.XXX.XXX/0001-XX"
-              maxLength="18"
-            />
-
-            <Select
-              label="Segmento Comercial"
-              name="industryId"
-              value={formData.industryId}
-              onChange={handleInputChange}
-              options={[
-                { value: '', label: 'Selecione um segmento' },
-                { value: 'retail', label: 'Varejo' },
-                { value: 'ecommerce', label: 'E-commerce' },
-                { value: 'services', label: 'Serviços' },
-                { value: 'finance', label: 'Financeiro' },
-                { value: 'saas', label: 'SaaS' },
-                { value: 'other', label: 'Outro' },
-              ]}
-              required
-            />
+            <h3 className="text-sm font-semibold text-gray-200 uppercase tracking-wider">Informações da Empresa</h3>
+            <Input label="Nome da Empresa" name="companyName" value={formData.companyName} onChange={handleInputChange} placeholder="Ex: Minha Empresa LTDA" icon={<Building2 size={18} />} required />
+            <Input label="CNPJ" name="cnpj" value={formData.cnpj} onChange={handleInputChange} placeholder="XX.XXX.XXX/0001-XX" maxLength={18} />
+            <Select label="Segmento Comercial" name="industryId" value={formData.industryId} onChange={handleInputChange} options={[
+              { value: '', label: 'Selecione um segmento' },
+              { value: '292701', label: 'E-commerce' },
+              { value: '292801', label: 'Varejo' },
+              { value: '292901', label: 'Serviços' },
+              { value: '293001', label: 'Financeiro' },
+              { value: '293101', label: 'Tecnologia' },
+              { value: '293201', label: 'Outro' },
+            ]} required />
           </div>
 
-          {/* Contact Section */}
           <div className="space-y-4 pt-4 border-t border-dark-100">
-            <h3 className="text-sm font-semibold text-gray-200 uppercase tracking-wider">
-              Informações de Contato
-            </h3>
-
-            <Input
-              label="Nome do Contato"
-              name="contactName"
-              value={formData.contactName}
-              onChange={handleInputChange}
-              placeholder="Ex: João Silva"
-              icon={<User size={18} />}
-              required
-            />
-
-            <Input
-              label="Email"
-              name="contactEmail"
-              type="email"
-              value={formData.contactEmail}
-              onChange={handleInputChange}
-              placeholder="email@empresa.com"
-              icon={<Mail size={18} />}
-              required
-            />
-
-            <Input
-              label="Telefone"
-              name="contactPhone"
-              value={formData.contactPhone}
-              onChange={handleInputChange}
-              placeholder="(11) 98765-4321"
-              icon={<Phone size={18} />}
-              required
-            />
+            <h3 className="text-sm font-semibold text-gray-200 uppercase tracking-wider">Informações de Contato</h3>
+            <Input label="Nome do Contato" name="contactName" value={formData.contactName} onChange={handleInputChange} placeholder="Ex: João Silva" icon={<User size={18} />} required />
+            <Input label="Email" name="contactEmail" type="email" value={formData.contactEmail} onChange={handleInputChange} placeholder="email@empresa.com" icon={<Mail size={18} />} required />
+            <Input label="Telefone" name="contactPhone" value={formData.contactPhone} onChange={handleInputChange} placeholder="+5511987654321" icon={<Phone size={18} />} required />
           </div>
 
-          {/* Batch Settings */}
           <div className="space-y-4 pt-4 border-t border-dark-100">
-            <h3 className="text-sm font-semibold text-gray-200 uppercase tracking-wider">
-              Configuração de Lote
-            </h3>
-
+            <h3 className="text-sm font-semibold text-gray-200 uppercase tracking-wider">Configuração de Lote</h3>
             <div className="grid grid-cols-2 gap-4">
-              <Input
-                label="Quantidade de Contas"
-                name="quantity"
-                type="number"
-                min="1"
-                max="100"
-                value={formData.quantity}
-                onChange={handleInputChange}
-                icon={<Hash size={18} />}
-                required
-              />
-
-              <Input
-                label="Prefixo de Nome"
-                name="namePrefix"
-                value={formData.namePrefix}
-                onChange={handleInputChange}
-                placeholder="Ex: ACC"
-                maxLength="10"
-              />
+              <Input label="Quantidade de Contas" name="quantity" type="number" min="1" max="100" value={formData.quantity} onChange={handleInputChange} icon={<Hash size={18} />} required />
+              <Input label="Prefixo de Nome" name="namePrefix" value={formData.namePrefix} onChange={handleInputChange} placeholder="Ex: ACC" maxLength={10} />
             </div>
-
             <p className="text-xs text-gray-400 bg-dark-400/50 p-3 rounded-lg">
               As contas serão criadas com nomes como: {formData.namePrefix}-001, {formData.namePrefix}-002, etc.
             </p>
           </div>
 
-          {/* Submit Button */}
           <div className="flex gap-3 pt-4 border-t border-dark-100">
-            <Button
-              type="submit"
-              size="lg"
-              className="flex-1"
-              loading={isLoading}
-              disabled={isLoading}
-            >
-              CRIAR CONTAS EM LOTE
+            <Button type="submit" size="lg" className="flex-1" loading={isLoading} disabled={isLoading}>
+              {isLoading ? 'CRIANDO...' : 'CRIAR CONTAS EM LOTE'}
             </Button>
           </div>
         </form>
       </Card>
-
-      {/* Info Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card className="text-center p-6">
-          <div className="text-brand-500 text-3xl font-bold mb-2">10-100</div>
-          <p className="text-sm text-gray-400">Contas por lote (recomendado)</p>
-        </Card>
-        <Card className="text-center p-6">
-          <div className="text-green-400 text-3xl font-bold mb-2">5 min</div>
-          <p className="text-sm text-gray-400">Tempo médio de processamento</p>
-        </Card>
-        <Card className="text-center p-6">
-          <div className="text-blue-400 text-3xl font-bold mb-2">24h</div>
-          <p className="text-sm text-gray-400">Suporte técnico disponível</p>
-        </Card>
-      </div>
     </div>
   );
 }

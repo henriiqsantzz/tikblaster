@@ -1,12 +1,21 @@
 import webPush from 'web-push';
 
-// Configure VAPID for push notifications
-if (process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY) {
-  webPush.setVapidDetails(
-    process.env.VAPID_EMAIL || 'mailto:admin@tikblaster.com',
-    process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
-    process.env.VAPID_PRIVATE_KEY
-  );
+// Lazy VAPID initialization to avoid build-time errors
+let vapidInitialized = false;
+function ensureVapidInit() {
+  if (vapidInitialized) return;
+  if (process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY) {
+    try {
+      webPush.setVapidDetails(
+        process.env.VAPID_EMAIL || 'mailto:admin@tikblaster.com',
+        process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY.trim(),
+        process.env.VAPID_PRIVATE_KEY.trim()
+      );
+      vapidInitialized = true;
+    } catch (e) {
+      console.error('VAPID init error:', e);
+    }
+  }
 }
 
 export interface PushPayload {
@@ -24,6 +33,7 @@ export async function sendPushNotification(
   payload: PushPayload
 ): Promise<boolean> {
   try {
+    ensureVapidInit();
     await webPush.sendNotification(
       subscription,
       JSON.stringify({

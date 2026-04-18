@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from 'next/server';
 import { TikTokApi } from '@/lib/tiktok-api';
 import { createServiceSupabase } from '@/lib/supabase-server';

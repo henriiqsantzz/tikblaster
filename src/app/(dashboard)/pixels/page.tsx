@@ -1,253 +1,145 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Card, Input, Button, Badge } from '@/components/ui';
-import { Search, Zap, RefreshCw, AlertCircle, CheckCircle, Clock } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Card, Badge, Button } from '@/components/ui';
+import { Zap, RefreshCw, AlertTriangle, Loader2 } from 'lucide-react';
+import { useAppStore } from '@/store/app-store';
+import Link from 'next/link';
 import toast from 'react-hot-toast';
-import { formatNumber } from '@/lib/utils';
-
-// Mock pixel data
-const mockAccounts = [
-  {
-    id: '1',
-    accountName: 'Conta Premium 01',
-    accountId: 'ACC-001',
-    pixelId: 'PTX-1234567890',
-    status: 'READY',
-    eventsCount: 1245,
-    lastFired: '2024-04-16 14:30:00',
-  },
-  {
-    id: '2',
-    accountName: 'Conta Premium 02',
-    accountId: 'ACC-002',
-    pixelId: 'PTX-0987654321',
-    status: 'ATTENTION',
-    eventsCount: 342,
-    lastFired: '2024-04-16 08:15:00',
-  },
-  {
-    id: '3',
-    accountName: 'Conta Standard 01',
-    accountId: 'ACC-003',
-    pixelId: '',
-    status: 'NO_PIXEL',
-    eventsCount: 0,
-    lastFired: '-',
-  },
-  {
-    id: '4',
-    accountName: 'Conta Premium 03',
-    accountId: 'ACC-004',
-    pixelId: 'PTX-1122334455',
-    status: 'READY',
-    eventsCount: 2103,
-    lastFired: '2024-04-16 15:45:00',
-  },
-  {
-    id: '5',
-    accountName: 'Conta Standard 02',
-    accountId: 'ACC-005',
-    pixelId: 'PTX-5566778899',
-    status: 'ATTENTION',
-    eventsCount: 89,
-    lastFired: '2024-04-15 22:30:00',
-  },
-];
-
-const getStatusIcon = (status: string) => {
-  switch (status) {
-    case 'READY':
-      return <CheckCircle size={20} className="text-green-400" />;
-    case 'ATTENTION':
-      return <AlertCircle size={20} className="text-yellow-400" />;
-    case 'NO_PIXEL':
-      return <Clock size={20} className="text-gray-400" />;
-    default:
-      return null;
-  }
-};
-
-const getStatusBadge = (status: string) => {
-  switch (status) {
-    case 'READY':
-      return <Badge variant="success">Pronto</Badge>;
-    case 'ATTENTION':
-      return <Badge variant="warning">Atenção</Badge>;
-    case 'NO_PIXEL':
-      return <Badge variant="error">Sem Pixel</Badge>;
-    default:
-      return null;
-  }
-};
 
 export default function PixelsPage() {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [isSyncing, setIsSyncing] = useState(false);
-  const [accounts, setAccounts] = useState(mockAccounts);
+  const { activeBC } = useAppStore();
+  const [pixels, setPixels] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [syncing, setSyncing] = useState(false);
+  const [error, setError] = useState('');
 
-  const stats = {
-    total: accounts.length,
-    ready: accounts.filter((a) => a.status === 'READY').length,
-    attention: accounts.filter((a) => a.status === 'ATTENTION').length,
-    noPixel: accounts.filter((a) => a.status === 'NO_PIXEL').length,
-  };
-
-  const filteredAccounts = accounts.filter((account) =>
-    account.accountName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    account.accountId.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const handleSync = async () => {
-    setIsSyncing(true);
+  const fetchPixels = async () => {
+    if (!activeBC?.bc_id) return;
+    setLoading(true);
+    setError('');
     try {
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      toast.success('Pixels sincronizados com sucesso!');
-    } catch (error) {
-      toast.error('Erro ao sincronizar pixels');
+      const res = await fetch(`/api/pixels?bc_id=${activeBC.bc_id}`);
+      if (!res.ok) throw new Error('Falha ao buscar pixels');
+      const data = await res.json();
+      setPixels(Array.isArray(data) ? data : []);
+    } catch (err: any) {
+      setError(err.message);
     } finally {
-      setIsSyncing(false);
+      setLoading(false);
     }
   };
 
-  return (
-    <div className="space-y-8">
-      {/* Header */}
-      <div className="flex items-start justify-between">
+  useEffect(() => { fetchPixels(); }, [activeBC?.bc_id]);
+
+  const handleSync = async () => {
+    if (!activeBC?.bc_id) return;
+    setSyncing(true);
+    try {
+      const res = await fetch('/api/pixels', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ bc_id: activeBC.bc_id }),
+      });
+      if (!res.ok) throw new Error('Falha ao sincronizar');
+      toast.success('Pixels sincronizados');
+      fetchPixels();
+    } catch (err: any) {
+      toast.error(err.message);
+    } finally {
+      setSyncing(false);
+    }
+  };
+
+  if (!activeBC) {
+    return (
+      <div className="space-y-8">
         <div>
           <h1 className="text-3xl font-bold text-gray-50">Pixels</h1>
-          <p className="text-gray-400 mt-1">Gerencie pixels de rastreamento de suas contas</p>
+          <p className="text-gray-400 mt-1">Gerencie seus pixels de conversão</p>
         </div>
-        <Button
-          onClick={handleSync}
-          loading={isSyncing}
-          disabled={isSyncing}
-          size="lg"
-        >
-          <RefreshCw size={20} />
-          SINCRONIZAR AGORA
+        <Card className="text-center py-16">
+          <AlertTriangle size={48} className="mx-auto mb-4 text-yellow-400" />
+          <h2 className="text-xl font-bold text-gray-100 mb-2">Conta TikTok não conectada</h2>
+          <p className="text-gray-400 mb-6">Conecte sua conta para ver seus pixels.</p>
+          <Link href="/settings"><Button size="lg">Ir para Configurações</Button></Link>
+        </Card>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-8">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-50">Pixels</h1>
+          <p className="text-gray-400 mt-1">Gerencie seus pixels de conversão - BC: {activeBC.name || activeBC.bc_id}</p>
+        </div>
+        <Button variant="secondary" size="sm" onClick={handleSync} loading={syncing} disabled={syncing}>
+          <RefreshCw size={16} className={syncing ? 'animate-spin' : ''} /> Sincronizar Pixels
         </Button>
       </div>
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <Card className="text-center p-6">
-          <p className="text-gray-400 text-sm mb-2">Total de Contas</p>
-          <p className="text-3xl font-bold text-gray-100">{stats.total}</p>
-        </Card>
-        <Card className="text-center p-6 border-green-900/50">
-          <div className="flex items-center justify-center gap-2 mb-2">
-            <CheckCircle size={16} className="text-green-400" />
-            <p className="text-gray-400 text-sm">Prontas</p>
+      {error && (
+        <Card className="border-red-900/50 bg-red-900/10">
+          <div className="flex items-center gap-3">
+            <AlertTriangle size={20} className="text-red-400" />
+            <p className="text-red-400 text-sm">{error}</p>
           </div>
-          <p className="text-3xl font-bold text-green-400">{stats.ready}</p>
         </Card>
-        <Card className="text-center p-6 border-yellow-900/50">
-          <div className="flex items-center justify-center gap-2 mb-2">
-            <AlertCircle size={16} className="text-yellow-400" />
-            <p className="text-gray-400 text-sm">Atenção</p>
-          </div>
-          <p className="text-3xl font-bold text-yellow-400">{stats.attention}</p>
+      )}
+
+      {loading ? (
+        <Card className="text-center py-12">
+          <Loader2 className="animate-spin mx-auto mb-3 text-brand-500" size={32} />
+          <p className="text-gray-400">Buscando pixels...</p>
         </Card>
-        <Card className="text-center p-6 border-gray-900/50">
-          <div className="flex items-center justify-center gap-2 mb-2">
-            <Clock size={16} className="text-gray-400" />
-            <p className="text-gray-400 text-sm">Sem Pixel</p>
-          </div>
-          <p className="text-3xl font-bold text-gray-400">{stats.noPixel}</p>
+      ) : pixels.length === 0 ? (
+        <Card className="text-center py-12">
+          <Zap size={48} className="mx-auto mb-4 text-gray-500" />
+          <p className="text-gray-400 text-lg mb-2">Nenhum pixel encontrado</p>
+          <p className="text-gray-500 text-sm">Crie pixels no TikTok Ads Manager e sincronize aqui.</p>
         </Card>
-      </div>
-
-      {/* Search */}
-      <Card>
-        <Input
-          placeholder="Buscar por nome ou ID da conta..."
-          icon={<Search size={18} />}
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-      </Card>
-
-      {/* Accounts List */}
-      <div className="space-y-3">
-        {filteredAccounts.length === 0 ? (
-          <Card className="text-center py-12">
-            <p className="text-gray-400">Nenhuma conta encontrada</p>
-          </Card>
-        ) : (
-          filteredAccounts.map((account) => (
-            <Card key={account.id} className="hover:shadow-lg transition-all duration-200">
-              <div className="flex items-start justify-between gap-4">
-                {/* Left Side */}
-                <div className="flex items-start gap-4 flex-1">
-                  <div className="flex-shrink-0 mt-1">
-                    {getStatusIcon(account.status)}
-                  </div>
-
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-3 mb-1 flex-wrap">
-                      <h3 className="text-lg font-semibold text-gray-100">
-                        {account.accountName}
-                      </h3>
-                      <span className="text-xs text-gray-500 bg-dark-400 px-2 py-1 rounded">
-                        {account.accountId}
-                      </span>
-                    </div>
-
-                    {account.status !== 'NO_PIXEL' && (
-                      <p className="text-sm text-gray-400 font-mono">
-                        ID: {account.pixelId}
-                      </p>
-                    )}
-
-                    <div className="flex items-center gap-4 mt-3 text-sm">
-                      <div>
-                        <p className="text-xs text-gray-500">Eventos Capturados</p>
-                        <p className="font-semibold text-gray-200">
-                          {formatNumber(account.eventsCount)}
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-gray-500">Último Evento</p>
-                        <p className="font-semibold text-gray-200">
-                          {account.lastFired}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {pixels.map((pixel: any) => (
+            <Card key={pixel.pixel_id || pixel.id} className="hover:shadow-lg transition-all">
+              <div className="flex items-start justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  <Zap size={20} className="text-brand-500" />
+                  <h3 className="font-semibold text-gray-100">{pixel.pixel_name || pixel.name}</h3>
                 </div>
-
-                {/* Right Side - Status Badge */}
-                <div className="flex-shrink-0">
-                  {getStatusBadge(account.status)}
+                <Badge variant={pixel.status === 'ACTIVE' || pixel.status === 'active' ? 'success' : 'warning'}>
+                  {pixel.status === 'ACTIVE' || pixel.status === 'active' ? 'Ativo' : pixel.status}
+                </Badge>
+              </div>
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Pixel ID</span>
+                  <span className="text-gray-300 font-mono">{pixel.pixel_id}</span>
                 </div>
+                {pixel.advertiser_id && (
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Conta</span>
+                    <span className="text-gray-300 font-mono">{pixel.advertiser_id}</span>
+                  </div>
+                )}
+                {pixel.events && pixel.events.length > 0 && (
+                  <div className="pt-2 border-t border-dark-100">
+                    <p className="text-gray-400 text-xs mb-1">Eventos:</p>
+                    {pixel.events.map((event: any, idx: number) => (
+                      <div key={idx} className="flex justify-between text-xs">
+                        <span className="text-gray-300">{event.event_name}</span>
+                        <span className="text-gray-500">{event.event_count} disparos</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </Card>
-          ))
-        )}
-      </div>
-
-      {/* Help Section */}
-      <Card
-        title="Precisa de Ajuda?"
-        icon={<Zap size={24} />}
-        className="border-brand-900/50"
-      >
-        <div className="space-y-3 text-sm text-gray-300">
-          <p>
-            <strong>Status "Pronto":</strong> O pixel está ativo e rastreando eventos
-            corretamente.
-          </p>
-          <p>
-            <strong>Status "Atenção":</strong> O pixel foi criado mas está com
-            atividade baixa. Verifique a implementação.
-          </p>
-          <p>
-            <strong>Status "Sem Pixel":</strong> Nenhum pixel foi criado para esta
-            conta. Configure um novo pixel na plataforma TikTok.
-          </p>
+          ))}
         </div>
-      </Card>
+      )}
     </div>
   );
 }

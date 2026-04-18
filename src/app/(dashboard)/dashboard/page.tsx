@@ -1,89 +1,40 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Card, Badge } from '@/components/ui';
-import { TrendingUp, TrendingDown, DollarSign, Eye, Mouse, Target, BarChart3 } from 'lucide-react';
-import { formatCurrency, formatNumber, formatPercent, formatRoas } from '@/lib/utils';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Card, Badge, Button, Select } from '@/components/ui';
+import { TrendingUp, TrendingDown, DollarSign, Eye, Mouse, Target, BarChart3, RefreshCw, AlertTriangle } from 'lucide-react';
+import { formatCurrency, formatNumber, formatPercent, formatRoas, cn } from '@/lib/utils';
+import { useAppStore } from '@/store/app-store';
+import Link from 'next/link';
 
-// Mock data for hourly sales
-const hourlyData = [
-  { hour: '00:00', revenue: 145.50, spend: 98.30, conversions: 12 },
-  { hour: '01:00', revenue: 187.20, spend: 124.50, conversions: 16 },
-  { hour: '02:00', revenue: 210.80, spend: 142.10, conversions: 18 },
-  { hour: '03:00', revenue: 156.30, spend: 105.20, conversions: 13 },
-  { hour: '04:00', revenue: 198.50, spend: 133.40, conversions: 17 },
-  { hour: '05:00', revenue: 224.60, spend: 151.20, conversions: 19 },
-  { hour: '06:00', revenue: 245.80, spend: 165.30, conversions: 21 },
-  { hour: '07:00', revenue: 312.40, spend: 210.15, conversions: 26 },
-  { hour: '08:00', revenue: 385.20, spend: 259.30, conversions: 33 },
-  { hour: '09:00', revenue: 421.50, spend: 283.45, conversions: 36 },
-  { hour: '10:00', revenue: 392.10, spend: 264.20, conversions: 33 },
-  { hour: '11:00', revenue: 352.80, spend: 237.50, conversions: 30 },
-  { hour: '12:00', revenue: 498.30, spend: 335.40, conversions: 42 },
-  { hour: '13:00', revenue: 512.60, spend: 345.20, conversions: 43 },
-  { hour: '14:00', revenue: 445.20, spend: 299.50, conversions: 38 },
-  { hour: '15:00', revenue: 478.90, spend: 322.30, conversions: 41 },
-  { hour: '16:00', revenue: 425.50, spend: 286.40, conversions: 36 },
-  { hour: '17:00', revenue: 392.20, spend: 264.10, conversions: 33 },
-  { hour: '18:00', revenue: 468.70, spend: 315.40, conversions: 40 },
-  { hour: '19:00', revenue: 512.30, spend: 344.80, conversions: 43 },
-  { hour: '20:00', revenue: 545.60, spend: 367.30, conversions: 46 },
-  { hour: '21:00', revenue: 523.40, spend: 352.10, conversions: 44 },
-  { hour: '22:00', revenue: 456.70, spend: 307.40, conversions: 39 },
-  { hour: '23:00', revenue: 381.20, spend: 256.80, conversions: 32 },
-];
-
-// Analytics Card Component
 const AnalyticsCard = ({
-  title,
-  value,
-  trend,
-  icon: Icon,
-  suffix = '',
+  title, value, trend, icon: Icon, suffix = '', loading = false,
 }: {
-  title: string;
-  value: string | number;
-  trend?: 'UP' | 'DOWN' | 'STABLE';
-  icon: React.ReactNode;
-  suffix?: string;
+  title: string; value: string | number; trend?: 'UP' | 'DOWN' | 'STABLE';
+  icon: React.ReactNode; suffix?: string; loading?: boolean;
 }) => {
   const getTrendColor = (t?: string) => {
-    switch (t) {
-      case 'UP':
-        return 'text-green-400';
-      case 'DOWN':
-        return 'text-red-400';
-      default:
-        return 'text-gray-400';
-    }
+    switch (t) { case 'UP': return 'text-green-400'; case 'DOWN': return 'text-red-400'; default: return 'text-gray-400'; }
   };
-
   const getTrendIcon = (t?: string) => {
-    switch (t) {
-      case 'UP':
-        return <TrendingUp size={16} />;
-      case 'DOWN':
-        return <TrendingDown size={16} />;
-      default:
-        return null;
-    }
+    switch (t) { case 'UP': return <TrendingUp size={16} />; case 'DOWN': return <TrendingDown size={16} />; default: return null; }
   };
 
   return (
     <Card className="flex items-start justify-between p-6">
       <div className="flex-1">
         <p className="text-sm text-gray-400 mb-2">{title}</p>
-        <p className="text-2xl font-bold text-gray-100">
-          {value}
-          {suffix && <span className="text-lg text-gray-400 ml-1">{suffix}</span>}
-        </p>
-        {trend && (
+        {loading ? (
+          <div className="h-8 w-24 bg-dark-200 rounded animate-pulse" />
+        ) : (
+          <p className="text-2xl font-bold text-gray-100">
+            {value}{suffix && <span className="text-lg text-gray-400 ml-1">{suffix}</span>}
+          </p>
+        )}
+        {trend && !loading && (
           <div className={cn('flex items-center gap-1 mt-3 text-sm font-medium', getTrendColor(trend))}>
             {getTrendIcon(trend)}
-            {trend === 'UP' && 'Crescimento'}
-            {trend === 'DOWN' && 'Redução'}
-            {trend === 'STABLE' && 'Estável'}
+            {trend === 'UP' && 'Crescimento'}{trend === 'DOWN' && 'Redução'}{trend === 'STABLE' && 'Estável'}
           </div>
         )}
       </div>
@@ -92,216 +43,136 @@ const AnalyticsCard = ({
   );
 };
 
-import { cn } from '@/lib/utils';
-
 export default function DashboardPage() {
-  const [dateRange] = useState('today');
+  const { activeBC, dateRange, setDateRange } = useAppStore();
+  const [metrics, setMetrics] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
-  const metrics = {
-    revenue: 8945.30,
-    spend: 5234.80,
-    cpa: 42.50,
-    cpm: 8.75,
-    ctr: 2.34,
-    impressions: 597000,
-    clicks: 13981,
-    conversions: 210,
-    roas: 1.71,
-    activeAccounts: 24,
-  };
+  const fetchMetrics = useCallback(async () => {
+    if (!activeBC?.bc_id) return;
+    setLoading(true);
+    setError('');
+    try {
+      const res = await fetch(`/api/tiktok/report?bc_id=${activeBC.bc_id}&date_range=${dateRange}`);
+      if (!res.ok) throw new Error('Falha ao buscar métricas');
+      const data = await res.json();
+      setMetrics(data);
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  }, [activeBC?.bc_id, dateRange]);
 
-  const totalRevenue = hourlyData.reduce((sum, d) => sum + d.revenue, 0);
-  const totalSpend = hourlyData.reduce((sum, d) => sum + d.spend, 0);
+  useEffect(() => { fetchMetrics(); }, [fetchMetrics]);
+
+  if (!activeBC) {
+    return (
+      <div className="space-y-8">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-50">Dashboard</h1>
+          <p className="text-gray-400 mt-1">Acompanhe o desempenho das suas campanhas</p>
+        </div>
+        <Card className="text-center py-16">
+          <AlertTriangle size={48} className="mx-auto mb-4 text-yellow-400" />
+          <h2 className="text-xl font-bold text-gray-100 mb-2">Conta TikTok não conectada</h2>
+          <p className="text-gray-400 mb-6">Conecte sua conta TikTok for Business para ver suas métricas.</p>
+          <Link href="/settings">
+            <Button size="lg">Ir para Configurações</Button>
+          </Link>
+        </Card>
+      </div>
+    );
+  }
+
+  const m = metrics || { spend: 0, impressions: 0, clicks: 0, conversions: 0, cpa: 0, cpm: 0, ctr: 0, roas: 0, active_accounts: 0 };
 
   return (
     <div className="space-y-8">
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-gray-50">Dashboard</h1>
-        <p className="text-gray-400 mt-1">Acompanhe o desempenho das suas campanhas</p>
-      </div>
-
-      {/* Analytics Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
-        <div className="lg:col-span-2">
-          <AnalyticsCard
-            title="Faturamento"
-            value={formatCurrency(metrics.revenue)}
-            trend="UP"
-            icon={<DollarSign size={28} />}
-          />
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-50">Dashboard</h1>
+          <p className="text-gray-400 mt-1">BC: {activeBC.name || activeBC.bc_id}</p>
         </div>
-        <div className="lg:col-span-2">
-          <AnalyticsCard
-            title="Gasto em Anúncios"
-            value={formatCurrency(metrics.spend)}
-            trend="DOWN"
-            icon={<BarChart3 size={28} />}
-          />
-        </div>
-        <div className="lg:col-span-1">
-          <AnalyticsCard
-            title="CPA"
-            value={formatCurrency(metrics.cpa)}
-            trend="STABLE"
-            icon={<Target size={28} />}
-          />
-        </div>
-        <div className="lg:col-span-1">
-          <AnalyticsCard
-            title="CPM"
-            value={formatCurrency(metrics.cpm)}
-            icon={<Eye size={28} />}
-          />
+        <div className="flex items-center gap-3">
+          <select
+            value={dateRange}
+            onChange={(e) => setDateRange(e.target.value)}
+            className="bg-dark-300 border border-dark-100 text-gray-200 text-sm rounded-lg px-3 py-2 focus:ring-brand-500 focus:border-brand-500"
+          >
+            <option value="today">Hoje</option>
+            <option value="3days">3 Dias</option>
+            <option value="7days">7 Dias</option>
+            <option value="30days">30 Dias</option>
+          </select>
+          <Button variant="secondary" size="sm" onClick={fetchMetrics} disabled={loading}>
+            <RefreshCw size={16} className={loading ? 'animate-spin' : ''} />
+          </Button>
         </div>
       </div>
 
-      {/* Second Row of Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
-        <AnalyticsCard
-          title="CTR"
-          value={formatPercent(metrics.ctr)}
-          trend="UP"
-          icon={<Mouse size={28} />}
-        />
-        <AnalyticsCard
-          title="Contas Ativas"
-          value={metrics.activeAccounts}
-          icon={<BarChart3 size={28} />}
-        />
+      {error && (
+        <Card className="border-red-900/50 bg-red-900/10">
+          <div className="flex items-center gap-3">
+            <AlertTriangle size={20} className="text-red-400" />
+            <p className="text-red-400 text-sm">{error}</p>
+            <Button variant="secondary" size="sm" onClick={fetchMetrics}>Tentar novamente</Button>
+          </div>
+        </Card>
+      )}
 
-        {/* ROAS Badge */}
-        <Card className="lg:col-span-2 flex items-center justify-between p-6">
+      {/* Main Metrics */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <AnalyticsCard title="Gasto em Anúncios" value={formatCurrency(m.spend)} icon={<DollarSign size={28} />} loading={loading} trend={m.spend_trend} />
+        <AnalyticsCard title="CPA" value={formatCurrency(m.cpa)} icon={<Target size={28} />} loading={loading} />
+        <AnalyticsCard title="CPM" value={formatCurrency(m.cpm)} icon={<Eye size={28} />} loading={loading} />
+        <AnalyticsCard title="CTR" value={formatPercent(m.ctr)} icon={<Mouse size={28} />} loading={loading} />
+      </div>
+
+      {/* Second Row */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <Card className="flex items-center justify-between p-6 lg:col-span-2">
           <div className="flex-1">
             <p className="text-sm text-gray-400 mb-2">ROAS</p>
-            <div className="flex items-baseline gap-2">
-              <p className="text-3xl font-bold text-brand-500">{formatRoas(metrics.roas)}</p>
-              <Badge variant="success" className="text-sm">Excelente</Badge>
-            </div>
+            {loading ? (
+              <div className="h-9 w-20 bg-dark-200 rounded animate-pulse" />
+            ) : (
+              <div className="flex items-baseline gap-2">
+                <p className="text-3xl font-bold text-brand-500">{formatRoas(m.roas)}</p>
+                {m.roas >= 1.5 && <Badge variant="success" className="text-sm">Positivo</Badge>}
+                {m.roas > 0 && m.roas < 1 && <Badge variant="danger" className="text-sm">Negativo</Badge>}
+              </div>
+            )}
           </div>
-          <div className="text-brand-500 flex-shrink-0">
-            <TrendingUp size={32} />
-          </div>
+          <div className="text-brand-500 flex-shrink-0"><TrendingUp size={32} /></div>
         </Card>
-
-        {/* BC Balance Card */}
-        <Card className="lg:col-span-2 flex items-center justify-between p-6">
-          <div className="flex-1">
-            <p className="text-sm text-gray-400 mb-2">Saldo BC</p>
-            <p className="text-2xl font-bold text-gray-100">
-              {formatCurrency(15423.50)}
-            </p>
-            <p className="text-xs text-gray-500 mt-2">Crédito disponível</p>
-          </div>
-          <div className="text-brand-500 flex-shrink-0">
-            <DollarSign size={32} />
-          </div>
-        </Card>
+        <AnalyticsCard title="Contas Ativas" value={m.active_accounts} icon={<BarChart3 size={28} />} loading={loading} />
+        <AnalyticsCard title="Conversões" value={formatNumber(m.conversions)} icon={<Target size={28} />} loading={loading} />
       </div>
 
-      {/* Hourly Sales Chart */}
-      <Card title="Vendas por Hora" subtitle="Últimas 24 horas">
-        <div className="w-full h-80">
-          <ResponsiveContainer width="100%" height="100%">
-            <AreaChart
-              data={hourlyData}
-              margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
-            >
-              <defs>
-                <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#00e6a0" stopOpacity={0.8} />
-                  <stop offset="95%" stopColor="#00e6a0" stopOpacity={0} />
-                </linearGradient>
-                <linearGradient id="colorSpend" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.8} />
-                  <stop offset="95%" stopColor="#f59e0b" stopOpacity={0} />
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1e2128" />
-              <XAxis
-                dataKey="hour"
-                stroke="#6b7280"
-                style={{ fontSize: '12px' }}
-                tick={{ fill: '#9ca3af' }}
-              />
-              <YAxis
-                stroke="#6b7280"
-                style={{ fontSize: '12px' }}
-                tick={{ fill: '#9ca3af' }}
-              />
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: '#13161b',
-                  border: '1px solid #1e2128',
-                  borderRadius: '8px',
-                }}
-                labelStyle={{ color: '#e5e7eb' }}
-              />
-              <Area
-                type="monotone"
-                dataKey="revenue"
-                stroke="#00e6a0"
-                fillOpacity={1}
-                fill="url(#colorRevenue)"
-                name="Faturamento"
-              />
-              <Area
-                type="monotone"
-                dataKey="spend"
-                stroke="#f59e0b"
-                fillOpacity={1}
-                fill="url(#colorSpend)"
-                name="Gasto"
-              />
-            </AreaChart>
-          </ResponsiveContainer>
-        </div>
-
-        {/* Chart Stats */}
-        <div className="grid grid-cols-3 gap-4 mt-6 pt-6 border-t border-dark-100">
-          <div>
-            <p className="text-xs text-gray-500 mb-1">Total de Faturamento</p>
-            <p className="text-lg font-bold text-brand-500">
-              {formatCurrency(totalRevenue)}
-            </p>
-          </div>
-          <div>
-            <p className="text-xs text-gray-500 mb-1">Total de Gasto</p>
-            <p className="text-lg font-bold text-amber-500">
-              {formatCurrency(totalSpend)}
-            </p>
-          </div>
-          <div>
-            <p className="text-xs text-gray-500 mb-1">ROAS Médio</p>
-            <p className="text-lg font-bold text-gray-100">
-              {formatRoas(totalRevenue / totalSpend)}
-            </p>
-          </div>
-        </div>
-      </Card>
-
-      {/* Summary Stats */}
+      {/* Stats Summary */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <Card className="text-center p-6">
           <p className="text-gray-400 text-sm mb-2">Impressões</p>
-          <p className="text-2xl font-bold text-gray-100">
-            {formatNumber(metrics.impressions)}
-          </p>
+          {loading ? <div className="h-8 w-20 mx-auto bg-dark-200 rounded animate-pulse" /> : (
+            <p className="text-2xl font-bold text-gray-100">{formatNumber(m.impressions)}</p>
+          )}
         </Card>
         <Card className="text-center p-6">
           <p className="text-gray-400 text-sm mb-2">Cliques</p>
-          <p className="text-2xl font-bold text-gray-100">
-            {formatNumber(metrics.clicks)}
-          </p>
+          {loading ? <div className="h-8 w-20 mx-auto bg-dark-200 rounded animate-pulse" /> : (
+            <p className="text-2xl font-bold text-gray-100">{formatNumber(m.clicks)}</p>
+          )}
         </Card>
         <Card className="text-center p-6">
           <p className="text-gray-400 text-sm mb-2">Conversões</p>
-          <p className="text-2xl font-bold text-brand-500">
-            {formatNumber(metrics.conversions)}
-          </p>
+          {loading ? <div className="h-8 w-20 mx-auto bg-dark-200 rounded animate-pulse" /> : (
+            <p className="text-2xl font-bold text-brand-500">{formatNumber(m.conversions)}</p>
+          )}
         </Card>
         <Card className="text-center p-6">
-          <p className="text-gray-400 text-sm mb-2">Data Range</p>
+          <p className="text-gray-400 text-sm mb-2">Período</p>
           <p className="text-xl font-bold text-gray-100">
             {dateRange === 'today' && 'Hoje'}
             {dateRange === '3days' && '3 Dias'}

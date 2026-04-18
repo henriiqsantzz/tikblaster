@@ -16,7 +16,7 @@ class TikTokApi {
     this.accessToken = accessToken;
   }
 
-  private async request<T>(
+  public async request<T>(
     method: 'GET' | 'POST',
     endpoint: string,
     params?: Record<string, any>

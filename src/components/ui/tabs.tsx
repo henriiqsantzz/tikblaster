@@ -85,4 +85,3 @@ const Tabs: React.FC<TabsProps> = ({
 };
 
 export { Tabs };
-export type { Tab, TabsProps };
