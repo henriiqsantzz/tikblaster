@@ -7,7 +7,7 @@ function ensureVapidInit() {
   if (process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY) {
     try {
       webPush.setVapidDetails(
-        process.env.VAPID_EMAIL || 'mailto:admin@tikblaster.com',
+        process.env.VAPID_EMAIL || 'mailto:admin@shadowads.com',
         process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY.trim(),
         process.env.VAPID_PRIVATE_KEY.trim()
       );
@@ -99,7 +99,7 @@ export function getNotificationPayload(
       };
     default:
       return {
-        title: 'TikBlaster',
+        title: 'ShadowAds',
         body: data.message || 'Você tem uma nova notificação.',
         data: { url: '/dashboard', type },
       };

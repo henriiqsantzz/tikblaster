@@ -34,7 +34,6 @@ export default function SettingsPage() {
           setBusinessCenters(data.business_centers || []);
         }
 
-        // Check push subscription (with timeout to avoid hanging)
         if ('serviceWorker' in navigator && 'PushManager' in window) {
           try {
             const swReady = Promise.race([
@@ -87,7 +86,6 @@ export default function SettingsPage() {
   const handleTogglePush = async () => {
     try {
       if (notifications.pushEnabled) {
-        // Unsubscribe
         const reg = await navigator.serviceWorker.ready;
         const sub = await reg.pushManager.getSubscription();
         if (sub) {
@@ -101,7 +99,6 @@ export default function SettingsPage() {
         setNotifications(prev => ({ ...prev, pushEnabled: false }));
         toast.success('Notificações push desativadas');
       } else {
-        // Subscribe
         const reg = await navigator.serviceWorker.ready;
         const sub = await reg.pushManager.subscribe({
           userVisibleOnly: true,
@@ -130,12 +127,12 @@ export default function SettingsPage() {
     return (
       <div className="space-y-8">
         <div>
-          <h1 className="text-3xl font-bold text-gray-50">Configurações</h1>
-          <p className="text-gray-400 mt-1">Carregando...</p>
+          <h1 className="text-3xl font-bold text-gray-800">Configurações</h1>
+          <p className="text-gray-500 mt-1">Carregando...</p>
         </div>
         <div className="space-y-6">
           {[1, 2, 3].map(i => (
-            <div key={i} className="h-48 bg-dark-300 rounded-xl animate-pulse" />
+            <div key={i} className="h-48 bg-gray-100 rounded-xl animate-pulse" />
           ))}
         </div>
       </div>
@@ -145,20 +142,20 @@ export default function SettingsPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold text-gray-50">Configurações</h1>
-        <p className="text-gray-400 mt-1">Gerencie suas preferências e integrações</p>
+        <h1 className="text-3xl font-bold text-gray-800">Configurações</h1>
+        <p className="text-gray-500 mt-1">Gerencie suas preferências e integrações</p>
       </div>
 
       {/* Profile Section */}
       <Card title="Perfil" icon={<User size={24} />}>
         <div className="space-y-4">
-          <div className="bg-dark-400/50 rounded-lg p-4 border border-dark-100">
-            <p className="text-sm text-gray-400 mb-1">Email</p>
-            <p className="text-gray-100 font-medium">{userEmail}</p>
+          <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
+            <p className="text-sm text-gray-500 mb-1">Email</p>
+            <p className="text-gray-800 font-medium">{userEmail}</p>
           </div>
 
-          <div className="pt-4 border-t border-dark-100">
-            <h4 className="text-sm font-semibold text-gray-200 mb-4">Alterar Senha</h4>
+          <div className="pt-4 border-t border-gray-100">
+            <h4 className="text-sm font-semibold text-gray-700 mb-4">Alterar Senha</h4>
             <div className="space-y-3">
               <Input
                 label="Nova Senha"
@@ -192,15 +189,15 @@ export default function SettingsPage() {
         <div className="space-y-4">
           {tiktokConnected ? (
             <>
-              <div className="bg-dark-400/50 rounded-lg p-4 border border-green-900/50">
+              <div className="bg-green-50 rounded-lg p-4 border border-green-200">
                 <div className="flex items-center gap-2 mb-3">
                   <div className="w-3 h-3 bg-green-400 rounded-full" />
-                  <p className="text-sm font-medium text-green-400">Conectado</p>
+                  <p className="text-sm font-medium text-green-600">Conectado</p>
                 </div>
                 {businessCenters.map((bc: any) => (
                   <div key={bc.bc_id} className="mb-3 last:mb-0">
-                    <p className="text-sm text-gray-300">
-                      Business Center: <span className="font-mono text-gray-100">{bc.name}</span>
+                    <p className="text-sm text-gray-600">
+                      Business Center: <span className="font-mono text-gray-800">{bc.name}</span>
                     </p>
                     <p className="text-xs text-gray-500 mt-1">
                       ID: {bc.bc_id}
@@ -220,13 +217,13 @@ export default function SettingsPage() {
             </>
           ) : (
             <>
-              <div className="bg-dark-400/50 rounded-lg p-4 border border-yellow-900/50">
+              <div className="bg-yellow-50 rounded-lg p-4 border border-yellow-200">
                 <div className="flex items-center gap-2 mb-2">
                   <div className="w-3 h-3 bg-yellow-400 rounded-full" />
-                  <p className="text-sm font-medium text-yellow-400">Desconectado</p>
+                  <p className="text-sm font-medium text-yellow-600">Desconectado</p>
                 </div>
-                <p className="text-sm text-gray-300">
-                  Conecte sua conta TikTok for Business para usar todas as funcionalidades do TikBlaster.
+                <p className="text-sm text-gray-600">
+                  Conecte sua conta TikTok for Business para usar todas as funcionalidades do ShadowAds.
                 </p>
                 <p className="text-xs text-gray-500 mt-2">
                   Você será redirecionado para o TikTok para autorizar o acesso.
@@ -255,7 +252,7 @@ export default function SettingsPage() {
       {/* Security */}
       <Card title="Segurança" icon={<Shield size={24} />}>
         <div className="space-y-4">
-          <p className="text-sm text-gray-400">
+          <p className="text-sm text-gray-500">
             Suas credenciais TikTok são armazenadas de forma segura e criptografada.
             Os tokens de acesso expiram automaticamente após 30 dias.
           </p>

@@ -1,11 +1,11 @@
 {
-  "name": "TikBlaster - TikTok Ads Manager",
-  "short_name": "TikBlaster",
+  "name": "ShadowAds - TikTok Ads Manager",
+  "short_name": "ShadowAds",
   "description": "Gerenciador de campanhas TikTok Ads em massa",
   "start_url": "/dashboard",
   "display": "standalone",
-  "background_color": "#0a0c10",
-  "theme_color": "#00e6a0",
+  "background_color": "#faf5f7",
+  "theme_color": "#ec4899",
   "orientation": "any",
   "categories": ["business", "productivity"],
   "icons": [

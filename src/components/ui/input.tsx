@@ -16,7 +16,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     return (
       <div className="w-full">
         {label && (
-          <label className="block text-sm font-medium text-gray-200 mb-2">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
             {label}
           </label>
         )}
@@ -30,8 +30,8 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             ref={ref}
             type={type}
             className={cn(
-              'w-full px-4 py-2.5 bg-dark-300 border border-dark-100 text-gray-50 rounded-lg',
-              'placeholder:text-gray-500 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500',
+              'w-full px-4 py-2.5 bg-white border border-gray-200 text-gray-800 rounded-lg',
+              'placeholder:text-gray-400 focus:outline-none focus:border-pink-500 focus:ring-1 focus:ring-pink-500',
               'transition-colors duration-200',
               icon && 'pl-10',
               error && 'border-red-500 focus:border-red-500 focus:ring-red-500',
@@ -40,7 +40,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             {...props}
           />
         </div>
-        {error && <p className="mt-1 text-sm text-red-400">{error}</p>}
+        {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
       </div>
     );
   }
@@ -61,15 +61,15 @@ const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
     return (
       <div className="w-full">
         {label && (
-          <label className="block text-sm font-medium text-gray-200 mb-2">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
             {label}
           </label>
         )}
         <select
           ref={ref}
           className={cn(
-            'w-full px-4 py-2.5 bg-dark-300 border border-dark-100 text-gray-50 rounded-lg',
-            'focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500',
+            'w-full px-4 py-2.5 bg-white border border-gray-200 text-gray-800 rounded-lg',
+            'focus:outline-none focus:border-pink-500 focus:ring-1 focus:ring-pink-500',
             'transition-colors duration-200',
             'appearance-none cursor-pointer',
             error && 'border-red-500 focus:border-red-500 focus:ring-red-500',
@@ -83,7 +83,7 @@ const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
             </option>
           ))}
         </select>
-        {error && <p className="mt-1 text-sm text-red-400">{error}</p>}
+        {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
       </div>
     );
   }
@@ -103,22 +103,22 @@ const TextArea = React.forwardRef<HTMLTextAreaElement, TextAreaProps>(
     return (
       <div className="w-full">
         {label && (
-          <label className="block text-sm font-medium text-gray-200 mb-2">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
             {label}
           </label>
         )}
         <textarea
           ref={ref}
           className={cn(
-            'w-full px-4 py-2.5 bg-dark-300 border border-dark-100 text-gray-50 rounded-lg',
-            'placeholder:text-gray-500 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500',
+            'w-full px-4 py-2.5 bg-white border border-gray-200 text-gray-800 rounded-lg',
+            'placeholder:text-gray-400 focus:outline-none focus:border-pink-500 focus:ring-1 focus:ring-pink-500',
             'transition-colors duration-200 resize-none',
             error && 'border-red-500 focus:border-red-500 focus:ring-red-500',
             className
           )}
           {...props}
         />
-        {error && <p className="mt-1 text-sm text-red-400">{error}</p>}
+        {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
       </div>
     );
   }

@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { createClient } from '@/lib/supabase-client';
+import { Zap } from 'lucide-react';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -44,15 +45,15 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-dark-500 flex items-center justify-center p-4">
+    <div className="min-h-screen flex items-center justify-center p-4" style={{ background: 'linear-gradient(135deg, #2d1226 0%, #1a0a14 50%, #0f0a0d 100%)' }}>
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 bg-brand rounded-xl flex items-center justify-center">
-              <span className="text-dark-500 font-bold text-xl">TB</span>
+            <div className="w-12 h-12 bg-gradient-to-br from-pink-500 to-rose-600 rounded-xl flex items-center justify-center shadow-lg shadow-pink-500/20">
+              <Zap size={24} className="text-white" />
             </div>
-            <h1 className="text-3xl font-bold text-white">TikBlaster</h1>
+            <h1 className="text-3xl font-bold text-white">ShadowAds</h1>
           </div>
           <p className="text-gray-400">
             Gerencie suas campanhas TikTok Ads em massa
@@ -60,7 +61,7 @@ export default function LoginPage() {
         </div>
 
         {/* Form Card */}
-        <div className="bg-dark-300 border border-dark-50 rounded-2xl p-8">
+        <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8">
           <h2 className="text-xl font-semibold text-white mb-6">
             {isSignUp ? 'Criar conta' : 'Entrar'}
           </h2>
@@ -73,7 +74,7 @@ export default function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full px-4 py-3 bg-dark-400 border border-dark-50 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-brand transition-colors"
+                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-pink-500 transition-colors"
                 placeholder="seu@email.com"
               />
             </div>
@@ -86,7 +87,7 @@ export default function LoginPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 minLength={6}
-                className="w-full px-4 py-3 bg-dark-400 border border-dark-50 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-brand transition-colors"
+                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-pink-500 transition-colors"
                 placeholder="Mínimo 6 caracteres"
               />
             </div>
@@ -98,7 +99,7 @@ export default function LoginPage() {
             )}
 
             {message && (
-              <div className="p-3 bg-brand/10 border border-brand/30 rounded-lg text-brand text-sm">
+              <div className="p-3 bg-pink-500/10 border border-pink-500/30 rounded-lg text-pink-400 text-sm">
                 {message}
               </div>
             )}
@@ -106,7 +107,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 bg-brand hover:bg-brand-700 text-dark-500 font-semibold rounded-lg transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full py-3 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-semibold rounded-lg transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-pink-500/20"
             >
               {loading ? (
                 <div className="spinner" />
@@ -125,7 +126,7 @@ export default function LoginPage() {
                 setError('');
                 setMessage('');
               }}
-              className="text-brand hover:text-brand-300 text-sm transition-colors"
+              className="text-pink-400 hover:text-pink-300 text-sm transition-colors"
             >
               {isSignUp
                 ? 'Já tem conta? Entrar'
@@ -134,8 +135,8 @@ export default function LoginPage() {
           </div>
         </div>
 
-        <p className="text-center text-gray-500 text-xs mt-6">
-          TikBlaster - Ferramenta privada de gestão TikTok Ads
+        <p className="text-center text-gray-600 text-xs mt-6">
+          ShadowAds - Ferramenta privada de gestão TikTok Ads
         </p>
       </div>
     </div>

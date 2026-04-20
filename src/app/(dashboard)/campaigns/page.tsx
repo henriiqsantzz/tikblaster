@@ -133,15 +133,19 @@ export default function CampaignsPage() {
     return (
       <div className="space-y-8">
         <div>
-          <h1 className="text-3xl font-bold text-gray-50">Campanhas</h1>
-          <p className="text-gray-400 mt-1">Criador em lote de campanhas TikTok</p>
+          <h1 className="text-3xl font-bold text-gray-800">Campanhas</h1>
+          <p className="text-gray-500 mt-1">Criador em lote de campanhas TikTok</p>
         </div>
-        <Card className="text-center py-16">
-          <AlertTriangle size={48} className="mx-auto mb-4 text-yellow-400" />
-          <h2 className="text-xl font-bold text-gray-100 mb-2">Conta TikTok não conectada</h2>
-          <p className="text-gray-400 mb-6">Conecte sua conta para criar campanhas em lote.</p>
-          <Link href="/settings"><Button size="lg">Ir para Configurações</Button></Link>
-        </Card>
+        <div className="bg-white rounded-xl border border-gray-100 shadow-sm text-center py-16 px-6">
+          <AlertTriangle size={48} className="mx-auto mb-4 text-yellow-500" />
+          <h2 className="text-xl font-bold text-gray-800 mb-2">Conta TikTok não conectada</h2>
+          <p className="text-gray-500 mb-6">Conecte sua conta para criar campanhas em lote.</p>
+          <Link href="/settings">
+            <button className="bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-semibold px-6 py-3 rounded-lg transition-all shadow-lg shadow-pink-500/20">
+              Ir para Configurações
+            </button>
+          </Link>
+        </div>
       </div>
     );
   }
@@ -149,8 +153,8 @@ export default function CampaignsPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold text-gray-50">Campanhas</h1>
-        <p className="text-gray-400 mt-1">Criador em lote de campanhas TikTok - BC: {activeBC.name || activeBC.bc_id}</p>
+        <h1 className="text-3xl font-bold text-gray-800">Campanhas</h1>
+        <p className="text-gray-500 mt-1">Criador em lote de campanhas TikTok - BC: {activeBC.name || activeBC.bc_id}</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
@@ -159,23 +163,23 @@ export default function CampaignsPage() {
           <Card title="Estrutura" className="sticky top-20">
             <div className="space-y-3 text-sm">
               <div>
-                <p className="font-semibold text-gray-200 flex items-center gap-2 mb-2"><Plus size={16} /> Campanha</p>
+                <p className="font-semibold text-gray-700 flex items-center gap-2 mb-2"><Plus size={16} /> Campanha</p>
                 <div className="pl-4">
-                  <div className="px-3 py-2 rounded bg-dark-200 text-xs text-gray-300">
+                  <div className="px-3 py-2 rounded bg-gray-50 text-xs text-gray-600 border border-gray-100">
                     {campaignForm.name || 'Nova Campanha'}
                   </div>
                 </div>
               </div>
               <div>
-                <p className="font-semibold text-gray-200 flex items-center gap-2 mb-2"><ChevronRight size={16} /> Conjunto</p>
+                <p className="font-semibold text-gray-700 flex items-center gap-2 mb-2"><ChevronRight size={16} /> Conjunto</p>
                 <div className="pl-4">
-                  <div className="px-3 py-2 rounded bg-dark-200 text-xs text-gray-300">Conjunto 1</div>
+                  <div className="px-3 py-2 rounded bg-gray-50 text-xs text-gray-600 border border-gray-100">Conjunto 1</div>
                 </div>
               </div>
               <div>
-                <p className="font-semibold text-gray-200 flex items-center gap-2 mb-2"><ChevronRight size={16} /> Criativo</p>
+                <p className="font-semibold text-gray-700 flex items-center gap-2 mb-2"><ChevronRight size={16} /> Criativo</p>
                 <div className="pl-4">
-                  <div className="px-3 py-2 rounded bg-dark-200 text-xs text-gray-300">Criativo 1</div>
+                  <div className="px-3 py-2 rounded bg-gray-50 text-xs text-gray-600 border border-gray-100">Criativo 1</div>
                 </div>
               </div>
             </div>
@@ -187,19 +191,19 @@ export default function CampaignsPage() {
           {/* Step Indicator */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className={cn('w-10 h-10 rounded-full flex items-center justify-center font-bold', currentStep === 'campaign' ? 'bg-brand-500 text-dark-500' : 'bg-dark-300 text-gray-300')}>1</div>
-              <span className="text-sm text-gray-300">Campanha</span>
+              <div className={cn('w-10 h-10 rounded-full flex items-center justify-center font-bold', currentStep === 'campaign' ? 'bg-pink-500 text-white' : 'bg-gray-100 text-gray-400')}>1</div>
+              <span className="text-sm text-gray-600">Campanha</span>
             </div>
-            <div className="h-1 flex-1 mx-4 bg-dark-300 rounded">
-              <div className="h-full bg-brand-500 rounded transition-all" style={{ width: currentStep === 'campaign' ? '0%' : currentStep === 'adgroup' ? '50%' : '100%' }} />
+            <div className="h-1 flex-1 mx-4 bg-gray-100 rounded">
+              <div className="h-full bg-pink-500 rounded transition-all" style={{ width: currentStep === 'campaign' ? '0%' : currentStep === 'adgroup' ? '50%' : '100%' }} />
             </div>
-            <div className={cn('w-10 h-10 rounded-full flex items-center justify-center font-bold', currentStep === 'adgroup' ? 'bg-brand-500 text-dark-500' : 'bg-dark-400 text-gray-400')}>2</div>
-            <span className="text-sm text-gray-300">Conjuntos</span>
-            <div className="h-1 flex-1 mx-4 bg-dark-300 rounded">
-              <div className="h-full bg-brand-500 rounded transition-all" style={{ width: currentStep === 'creative' ? '100%' : '0%' }} />
+            <div className={cn('w-10 h-10 rounded-full flex items-center justify-center font-bold', currentStep === 'adgroup' ? 'bg-pink-500 text-white' : 'bg-gray-100 text-gray-400')}>2</div>
+            <span className="text-sm text-gray-600">Conjuntos</span>
+            <div className="h-1 flex-1 mx-4 bg-gray-100 rounded">
+              <div className="h-full bg-pink-500 rounded transition-all" style={{ width: currentStep === 'creative' ? '100%' : '0%' }} />
             </div>
-            <div className={cn('w-10 h-10 rounded-full flex items-center justify-center font-bold', currentStep === 'creative' ? 'bg-brand-500 text-dark-500' : 'bg-dark-400 text-gray-400')}>3</div>
-            <span className="text-sm text-gray-300">Criativos</span>
+            <div className={cn('w-10 h-10 rounded-full flex items-center justify-center font-bold', currentStep === 'creative' ? 'bg-pink-500 text-white' : 'bg-gray-100 text-gray-400')}>3</div>
+            <span className="text-sm text-gray-600">Criativos</span>
           </div>
 
           {/* Campaign Step */}
@@ -207,9 +211,9 @@ export default function CampaignsPage() {
             <div className="space-y-6">
               <Card title="Selecionar Contas de Anunciantes">
                 {loadingAdvs ? (
-                  <div className="py-8 text-center text-gray-400"><Loader2 className="animate-spin mx-auto mb-2" size={24} />Carregando anunciantes...</div>
+                  <div className="py-8 text-center text-gray-500"><Loader2 className="animate-spin mx-auto mb-2" size={24} />Carregando anunciantes...</div>
                 ) : realAdvertisers.length === 0 ? (
-                  <div className="py-8 text-center text-gray-400">
+                  <div className="py-8 text-center text-gray-500">
                     <p>Nenhum anunciante encontrado neste BC.</p>
                     <p className="text-sm mt-2">Sincronize os anunciantes na página de Business Centers.</p>
                   </div>
@@ -219,10 +223,10 @@ export default function CampaignsPage() {
                       { key: 'name' as const, header: 'Nome da Conta' },
                       { key: 'accountId' as const, header: 'ID da Conta' },
                       { key: 'status' as const, header: 'Status', render: (value: string) => (
-                        <span className={cn('font-medium', value === 'ACTIVE' ? 'text-green-400' : 'text-red-400')}>{value === 'ACTIVE' ? 'Ativa' : value}</span>
+                        <span className={cn('font-medium', value === 'ACTIVE' ? 'text-green-600' : 'text-red-500')}>{value === 'ACTIVE' ? 'Ativa' : value}</span>
                       )},
                       { key: 'balance' as const, header: 'Saldo', render: (value: number, row: any) => (
-                        <span className="text-gray-300">{row.currency} {parseFloat(value as any || 0).toFixed(2)}</span>
+                        <span className="text-gray-600">{row.currency} {parseFloat(value as any || 0).toFixed(2)}</span>
                       )},
                     ]}
                     data={realAdvertisers}
@@ -283,23 +287,23 @@ export default function CampaignsPage() {
                     { value: 'GENDER_UNLIMITED', label: 'Todos' }, { value: 'GENDER_MALE', label: 'Homem' }, { value: 'GENDER_FEMALE', label: 'Mulher' },
                   ]} value={adgroupForm.gender} onChange={(e) => setAdgroupForm({ ...adgroupForm, gender: e.target.value })} />
                   <div>
-                    <label className="block text-sm font-medium text-gray-200 mb-2">Faixa Etária</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Faixa Etária</label>
                     <div className="space-y-2">
                       {['13-17', '18-24', '25-34', '35-44', '45-54', '55+'].map(age => (
                         <label key={age} className="flex items-center gap-3 cursor-pointer">
-                          <input type="checkbox" checked={adgroupForm.ageGroups.includes(age)} onChange={(e) => setAdgroupForm({ ...adgroupForm, ageGroups: e.target.checked ? [...adgroupForm.ageGroups, age] : adgroupForm.ageGroups.filter(a => a !== age) })} className="w-4 h-4 rounded border border-dark-100 bg-dark-300 cursor-pointer accent-brand-500" />
-                          <span className="text-sm text-gray-300">{age} anos</span>
+                          <input type="checkbox" checked={adgroupForm.ageGroups.includes(age)} onChange={(e) => setAdgroupForm({ ...adgroupForm, ageGroups: e.target.checked ? [...adgroupForm.ageGroups, age] : adgroupForm.ageGroups.filter(a => a !== age) })} className="w-4 h-4 rounded border border-gray-300 bg-white cursor-pointer accent-pink-500" />
+                          <span className="text-sm text-gray-600">{age} anos</span>
                         </label>
                       ))}
                     </div>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-200 mb-2">Sistema Operacional</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Sistema Operacional</label>
                     <div className="space-y-2">
                       {['iOS', 'Android'].map(os => (
                         <label key={os} className="flex items-center gap-3 cursor-pointer">
-                          <input type="checkbox" checked={adgroupForm.os.includes(os)} onChange={(e) => setAdgroupForm({ ...adgroupForm, os: e.target.checked ? [...adgroupForm.os, os] : adgroupForm.os.filter(o => o !== os) })} className="w-4 h-4 rounded border border-dark-100 bg-dark-300 cursor-pointer accent-brand-500" />
-                          <span className="text-sm text-gray-300">{os}</span>
+                          <input type="checkbox" checked={adgroupForm.os.includes(os)} onChange={(e) => setAdgroupForm({ ...adgroupForm, os: e.target.checked ? [...adgroupForm.os, os] : adgroupForm.os.filter(o => o !== os) })} className="w-4 h-4 rounded border border-gray-300 bg-white cursor-pointer accent-pink-500" />
+                          <span className="text-sm text-gray-600">{os}</span>
                         </label>
                       ))}
                     </div>
@@ -332,12 +336,12 @@ export default function CampaignsPage() {
                 </div>
               </Card>
               <Card title="Arquivo Criativo">
-                <div className="bg-dark-400/50 rounded-lg p-4 border border-dark-100">
-                  <p className="text-sm text-gray-300 mb-2">
+                <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
+                  <p className="text-sm text-gray-600 mb-2">
                     Para o criativo (vídeo/imagem), faça o upload diretamente na plataforma TikTok Ads Manager e use o video_id ou image_id gerado.
                   </p>
                   <p className="text-xs text-gray-500">
-                    O TikBlaster irá criar a campanha, conjunto e anúncio com as configurações acima. O criativo será vinculado automaticamente ao anúncio.
+                    O ShadowAds irá criar a campanha, conjunto e anúncio com as configurações acima. O criativo será vinculado automaticamente ao anúncio.
                   </p>
                 </div>
               </Card>
@@ -359,24 +363,24 @@ export default function CampaignsPage() {
       </div>
 
       {/* Bottom Stats Bar */}
-      <Card className="bg-dark-400/50 border-dark-100 sticky bottom-0">
+      <div className="bg-white rounded-xl border border-gray-100 shadow-sm px-6 py-4 sticky bottom-0">
         <div className="flex items-center justify-between flex-wrap gap-4">
           <div className="flex items-center gap-6">
             <div>
               <p className="text-xs text-gray-500">Contas Selecionadas</p>
-              <p className="text-lg font-bold text-brand-500">{selectedAccounts.length}</p>
+              <p className="text-lg font-bold text-pink-600">{selectedAccounts.length}</p>
             </div>
             <div>
               <p className="text-xs text-gray-500">Campanhas a Criar</p>
-              <p className="text-lg font-bold text-gray-100">{selectedAccounts.length}</p>
+              <p className="text-lg font-bold text-gray-800">{selectedAccounts.length}</p>
             </div>
           </div>
-          <div className="text-sm text-gray-400 flex items-center gap-2">
+          <div className="text-sm text-gray-500 flex items-center gap-2">
             <AlertCircle size={16} />
             Cada conta receberá 1 campanha + 1 conjunto + 1 anúncio
           </div>
         </div>
-      </Card>
+      </div>
     </div>
   );
 }

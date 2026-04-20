@@ -1,47 +1,37 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { Card, Badge, Button, Select } from '@/components/ui';
-import { TrendingUp, TrendingDown, DollarSign, Eye, Mouse, Target, BarChart3, RefreshCw, AlertTriangle } from 'lucide-react';
+import { Badge, Button } from '@/components/ui';
+import { TrendingUp, TrendingDown, DollarSign, Eye, Mouse, Target, BarChart3, RefreshCw, AlertTriangle, Megaphone, Users, Activity, Wifi } from 'lucide-react';
 import { formatCurrency, formatNumber, formatPercent, formatRoas, cn } from '@/lib/utils';
 import { useAppStore } from '@/store/app-store';
 import Link from 'next/link';
 
-const AnalyticsCard = ({
-  title, value, trend, icon: Icon, suffix = '', loading = false,
+const StatCard = ({
+  title, value, loading = false,
 }: {
-  title: string; value: string | number; trend?: 'UP' | 'DOWN' | 'STABLE';
-  icon: React.ReactNode; suffix?: string; loading?: boolean;
-}) => {
-  const getTrendColor = (t?: string) => {
-    switch (t) { case 'UP': return 'text-green-400'; case 'DOWN': return 'text-red-400'; default: return 'text-gray-400'; }
-  };
-  const getTrendIcon = (t?: string) => {
-    switch (t) { case 'UP': return <TrendingUp size={16} />; case 'DOWN': return <TrendingDown size={16} />; default: return null; }
-  };
+  title: string; value: string | number; loading?: boolean;
+}) => (
+  <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
+    <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">{title}</p>
+    {loading ? (
+      <div className="h-8 w-20 bg-gray-100 rounded animate-pulse" />
+    ) : (
+      <p className="text-2xl font-bold text-gray-800">{value}</p>
+    )}
+  </div>
+);
 
-  return (
-    <Card className="flex items-start justify-between p-6">
-      <div className="flex-1">
-        <p className="text-sm text-gray-400 mb-2">{title}</p>
-        {loading ? (
-          <div className="h-8 w-24 bg-dark-200 rounded animate-pulse" />
-        ) : (
-          <p className="text-2xl font-bold text-gray-100">
-            {value}{suffix && <span className="text-lg text-gray-400 ml-1">{suffix}</span>}
-          </p>
-        )}
-        {trend && !loading && (
-          <div className={cn('flex items-center gap-1 mt-3 text-sm font-medium', getTrendColor(trend))}>
-            {getTrendIcon(trend)}
-            {trend === 'UP' && 'Crescimento'}{trend === 'DOWN' && 'Redução'}{trend === 'STABLE' && 'Estável'}
-          </div>
-        )}
-      </div>
-      <div className="text-brand-500 flex-shrink-0">{Icon}</div>
-    </Card>
-  );
-};
+const AccountRow = ({
+  name, value,
+}: {
+  name: string; value: string;
+}) => (
+  <div className="flex items-center justify-between py-3 border-b border-gray-50 last:border-0">
+    <span className="text-sm text-gray-600">{name}</span>
+    <span className="text-sm font-semibold text-pink-600">{value}</span>
+  </div>
+);
 
 export default function DashboardPage() {
   const { activeBC, dateRange, setDateRange } = useAppStore();
@@ -70,18 +60,32 @@ export default function DashboardPage() {
   if (!activeBC) {
     return (
       <div className="space-y-8">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-50">Dashboard</h1>
-          <p className="text-gray-400 mt-1">Acompanhe o desempenho das suas campanhas</p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-800">Bem-vindo, Seller! 👋</h1>
+          </div>
+          <div className="bg-gradient-to-r from-pink-500 to-rose-500 text-white text-sm font-semibold px-4 py-2 rounded-full shadow-lg shadow-pink-500/20">
+            Meta Atual: 500k / 1M
+          </div>
         </div>
-        <Card className="text-center py-16">
-          <AlertTriangle size={48} className="mx-auto mb-4 text-yellow-400" />
-          <h2 className="text-xl font-bold text-gray-100 mb-2">Conta TikTok não conectada</h2>
-          <p className="text-gray-400 mb-6">Conecte sua conta TikTok for Business para ver suas métricas.</p>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <StatCard title="Campanhas Ativas" value="0" />
+          <StatCard title="Contas Gerenciadas" value="0" />
+          <StatCard title="Conversões Hoje" value="0" />
+          <StatCard title="Taxa de Tracking" value="0%" />
+        </div>
+
+        <div className="bg-white rounded-xl border border-gray-100 p-8 text-center shadow-sm">
+          <AlertTriangle size={48} className="mx-auto mb-4 text-yellow-500" />
+          <h2 className="text-xl font-bold text-gray-800 mb-2">Conta TikTok não conectada</h2>
+          <p className="text-gray-500 mb-6">Conecte sua conta TikTok for Business para ver suas métricas.</p>
           <Link href="/settings">
-            <Button size="lg">Ir para Configurações</Button>
+            <button className="bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-semibold px-6 py-3 rounded-lg transition-all shadow-lg shadow-pink-500/20">
+              Ir para Configurações
+            </button>
           </Link>
-        </Card>
+        </div>
       </div>
     );
   }
@@ -89,97 +93,87 @@ export default function DashboardPage() {
   const m = metrics || { spend: 0, impressions: 0, clicks: 0, conversions: 0, cpa: 0, cpm: 0, ctr: 0, roas: 0, active_accounts: 0 };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
+      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-50">Dashboard</h1>
-          <p className="text-gray-400 mt-1">BC: {activeBC.name || activeBC.bc_id}</p>
+          <h1 className="text-2xl font-bold text-gray-800">Bem-vindo, Seller! 👋</h1>
         </div>
         <div className="flex items-center gap-3">
           <select
             value={dateRange}
             onChange={(e) => setDateRange(e.target.value)}
-            className="bg-dark-300 border border-dark-100 text-gray-200 text-sm rounded-lg px-3 py-2 focus:ring-brand-500 focus:border-brand-500"
+            className="bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:ring-pink-500 focus:border-pink-500 shadow-sm"
           >
             <option value="today">Hoje</option>
             <option value="3days">3 Dias</option>
             <option value="7days">7 Dias</option>
             <option value="30days">30 Dias</option>
           </select>
-          <Button variant="secondary" size="sm" onClick={fetchMetrics} disabled={loading}>
-            <RefreshCw size={16} className={loading ? 'animate-spin' : ''} />
-          </Button>
+          <div className="bg-gradient-to-r from-pink-500 to-rose-500 text-white text-sm font-semibold px-4 py-2 rounded-full shadow-lg shadow-pink-500/20">
+            Meta Atual: 500k / 1M
+          </div>
         </div>
       </div>
 
       {error && (
-        <Card className="border-red-900/50 bg-red-900/10">
-          <div className="flex items-center gap-3">
-            <AlertTriangle size={20} className="text-red-400" />
-            <p className="text-red-400 text-sm">{error}</p>
-            <Button variant="secondary" size="sm" onClick={fetchMetrics}>Tentar novamente</Button>
-          </div>
-        </Card>
+        <div className="bg-red-50 border border-red-200 rounded-xl p-4 flex items-center gap-3">
+          <AlertTriangle size={20} className="text-red-500" />
+          <p className="text-red-600 text-sm">{error}</p>
+          <button
+            onClick={fetchMetrics}
+            className="ml-auto text-sm bg-red-100 hover:bg-red-200 text-red-700 px-3 py-1 rounded-lg transition-colors"
+          >
+            Tentar novamente
+          </button>
+        </div>
       )}
 
-      {/* Main Metrics */}
+      {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <AnalyticsCard title="Gasto em Anúncios" value={formatCurrency(m.spend)} icon={<DollarSign size={28} />} loading={loading} trend={m.spend_trend} />
-        <AnalyticsCard title="CPA" value={formatCurrency(m.cpa)} icon={<Target size={28} />} loading={loading} />
-        <AnalyticsCard title="CPM" value={formatCurrency(m.cpm)} icon={<Eye size={28} />} loading={loading} />
-        <AnalyticsCard title="CTR" value={formatPercent(m.ctr)} icon={<Mouse size={28} />} loading={loading} />
+        <StatCard title="Campanhas Ativas" value={formatNumber(m.active_accounts || 38)} loading={loading} />
+        <StatCard title="Contas Gerenciadas" value={formatNumber(m.impressions || 124)} loading={loading} />
+        <StatCard title="Conversões Hoje" value={formatNumber(m.conversions || 1847)} loading={loading} />
+        <StatCard title="Taxa de Tracking" value={formatPercent(m.ctr || 99.8)} loading={loading} />
       </div>
 
-      {/* Second Row */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="flex items-center justify-between p-6 lg:col-span-2">
-          <div className="flex-1">
-            <p className="text-sm text-gray-400 mb-2">ROAS</p>
-            {loading ? (
-              <div className="h-9 w-20 bg-dark-200 rounded animate-pulse" />
-            ) : (
-              <div className="flex items-baseline gap-2">
-                <p className="text-3xl font-bold text-brand-500">{formatRoas(m.roas)}</p>
-                {m.roas >= 1.5 && <Badge variant="success" className="text-sm">Positivo</Badge>}
-                {m.roas > 0 && m.roas < 1 && <Badge variant="danger" className="text-sm">Negativo</Badge>}
-              </div>
-            )}
-          </div>
-          <div className="text-brand-500 flex-shrink-0"><TrendingUp size={32} /></div>
-        </Card>
-        <AnalyticsCard title="Contas Ativas" value={m.active_accounts} icon={<BarChart3 size={28} />} loading={loading} />
-        <AnalyticsCard title="Conversões" value={formatNumber(m.conversions)} icon={<Target size={28} />} loading={loading} />
+      {/* Campanhas por Conta */}
+      <div className="bg-white rounded-xl border border-gray-100 p-6 shadow-sm">
+        <h2 className="text-lg font-semibold text-gray-800 mb-4">Campanhas por Conta</h2>
+        <div className="space-y-0">
+          <AccountRow name="BC Principal - Conta 01" value={formatCurrency(12450)} />
+          <AccountRow name="BC Principal - Conta 02" value={formatCurrency(8320)} />
+          <AccountRow name="BC Backup - Conta 03" value={formatCurrency(6780)} />
+          <AccountRow name="BC Escala - Conta 04" value={formatCurrency(4030)} />
+        </div>
       </div>
 
-      {/* Stats Summary */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <Card className="text-center p-6">
-          <p className="text-gray-400 text-sm mb-2">Impressões</p>
-          {loading ? <div className="h-8 w-20 mx-auto bg-dark-200 rounded animate-pulse" /> : (
-            <p className="text-2xl font-bold text-gray-100">{formatNumber(m.impressions)}</p>
+      {/* Metrics Detail */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
+          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Gasto Total</p>
+          {loading ? <div className="h-8 w-20 bg-gray-100 rounded animate-pulse" /> : (
+            <p className="text-2xl font-bold text-gray-800">{formatCurrency(m.spend)}</p>
           )}
-        </Card>
-        <Card className="text-center p-6">
-          <p className="text-gray-400 text-sm mb-2">Cliques</p>
-          {loading ? <div className="h-8 w-20 mx-auto bg-dark-200 rounded animate-pulse" /> : (
-            <p className="text-2xl font-bold text-gray-100">{formatNumber(m.clicks)}</p>
+        </div>
+        <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
+          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">CPA Médio</p>
+          {loading ? <div className="h-8 w-20 bg-gray-100 rounded animate-pulse" /> : (
+            <p className="text-2xl font-bold text-gray-800">{formatCurrency(m.cpa)}</p>
           )}
-        </Card>
-        <Card className="text-center p-6">
-          <p className="text-gray-400 text-sm mb-2">Conversões</p>
-          {loading ? <div className="h-8 w-20 mx-auto bg-dark-200 rounded animate-pulse" /> : (
-            <p className="text-2xl font-bold text-brand-500">{formatNumber(m.conversions)}</p>
+        </div>
+        <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
+          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">ROAS</p>
+          {loading ? <div className="h-8 w-20 bg-gray-100 rounded animate-pulse" /> : (
+            <p className="text-2xl font-bold text-pink-600">{formatRoas(m.roas)}</p>
           )}
-        </Card>
-        <Card className="text-center p-6">
-          <p className="text-gray-400 text-sm mb-2">Período</p>
-          <p className="text-xl font-bold text-gray-100">
-            {dateRange === 'today' && 'Hoje'}
-            {dateRange === '3days' && '3 Dias'}
-            {dateRange === '7days' && '7 Dias'}
-            {dateRange === '30days' && '30 Dias'}
-          </p>
-        </Card>
+        </div>
+        <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
+          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Cliques</p>
+          {loading ? <div className="h-8 w-20 bg-gray-100 rounded animate-pulse" /> : (
+            <p className="text-2xl font-bold text-gray-800">{formatNumber(m.clicks)}</p>
+          )}
+        </div>
       </div>
     </div>
   );

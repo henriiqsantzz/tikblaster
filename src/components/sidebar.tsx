@@ -18,6 +18,10 @@ import {
   BarChart3,
   AlertTriangle,
   LogOut,
+  Trophy,
+  Plug,
+  Code,
+  Crosshair,
 } from 'lucide-react';
 import { useAppStore } from '@/store/app-store';
 import { createClient } from '@/lib/supabase-client';
@@ -29,11 +33,6 @@ interface NavItem {
   icon: React.ReactNode;
   badge?: number;
   warning?: boolean;
-}
-
-interface NavSection {
-  title: string;
-  items: NavItem[];
 }
 
 const Sidebar = () => {
@@ -57,15 +56,13 @@ const Sidebar = () => {
   useEffect(() => {
     const init = async () => {
       try {
-        // Get user info from Supabase
         const supabase = createClient();
         const { data: { user } } = await supabase.auth.getUser();
         if (user) {
           setUserEmail(user.email || '');
-          setUserName(user.email?.split('@')[0] || 'Usuário');
+          setUserName(user.email?.split('@')[0] || 'Seller');
         }
 
-        // Get TikTok connection status and BCs
         const res = await fetch('/api/auth/me');
         if (res.ok) {
           const data = await res.json();
@@ -83,8 +80,6 @@ const Sidebar = () => {
               updated_at: bc.updated_at,
             }));
             setBusinessCenters(bcs);
-
-            // Auto-select first BC if none active
             if (!activeBC && bcs.length > 0) {
               setActiveBC(bcs[0]);
             }
@@ -99,7 +94,6 @@ const Sidebar = () => {
     init();
   }, []);
 
-  // Fetch advertisers when activeBC changes
   useEffect(() => {
     if (activeBC?.bc_id) {
       fetch(`/api/tiktok/advertisers?bc_id=${activeBC.bc_id}`)
@@ -129,174 +123,101 @@ const Sidebar = () => {
     router.push('/login');
   };
 
-  const mainNavItems: NavSection[] = [
-    {
-      title: 'Principal',
-      items: [
-        { label: 'Dashboard', href: '/dashboard', icon: <LayoutDashboard size={20} /> },
-        { label: 'Business Centers', href: '/business-centers', icon: <Building2 size={20} /> },
-        { label: 'Campanhas', href: '/campaigns', icon: <Megaphone size={20} /> },
-        { label: 'Gerenciador', href: '/manager', icon: <BarChart3 size={20} /> },
-        { label: 'Histórico', href: '/history', icon: <History size={20} /> },
-      ],
-    },
-    {
-      title: 'Operação',
-      items: [
-        { label: 'Criação de Contas', href: '/accounts', icon: <Smartphone size={20} /> },
-        { label: 'Pixels', href: '/pixels', icon: <Zap size={20} /> },
-      ],
-    },
-    {
-      title: 'Sistema',
-      items: [
-        {
-          label: 'Configurações',
-          href: '/settings',
-          icon: <Settings size={20} />,
-          warning: !tiktokConnected,
-        },
-      ],
-    },
+  const navItems: NavItem[] = [
+    { label: 'Dashboard', href: '/dashboard', icon: <LayoutDashboard size={20} /> },
+    { label: 'Campanhas', href: '/campaigns', icon: <Megaphone size={20} /> },
+    { label: 'Contas & BCs', href: '/business-centers', icon: <Building2 size={20} /> },
+    { label: 'Pixels', href: '/pixels', icon: <Zap size={20} /> },
+    { label: 'Tracking', href: '/manager', icon: <Crosshair size={20} /> },
+    { label: 'Ranking', href: '/history', icon: <Trophy size={20} /> },
+    { label: 'Integração', href: '/settings', icon: <Plug size={20} />, warning: !tiktokConnected },
+    { label: 'API e Webhooks', href: '/accounts', icon: <Code size={20} /> },
   ];
 
   const isActive = (href: string) => pathname === href || pathname.startsWith(href + '/');
 
   return (
     <>
+      {/* Mobile toggle */}
       <button
         onClick={toggleSidebar}
-        className="fixed top-4 left-4 z-40 lg:hidden bg-dark-300 hover:bg-dark-200 text-gray-200 p-2 rounded-lg transition-all"
+        className="fixed top-4 left-4 z-40 lg:hidden bg-[#2d1226] hover:bg-[#3d1a35] text-white p-2 rounded-lg transition-all shadow-lg"
       >
         {sidebarOpen ? <X size={24} /> : <Menu size={24} />}
       </button>
 
       <aside
         className={cn(
-          'fixed left-0 top-0 h-screen bg-dark-300 border-r border-dark-100 flex flex-col z-30 transition-transform duration-300 w-64',
+          'fixed left-0 top-0 h-screen flex flex-col z-30 transition-transform duration-300 w-56',
           !sidebarOpen && '-translate-x-full lg:translate-x-0'
         )}
+        style={{
+          background: 'linear-gradient(180deg, #3d1228 0%, #2a0e1e 25%, #1a0a14 50%, #0f0a0d 100%)',
+        }}
       >
         {/* Logo */}
-        <div className="px-6 py-6 border-b border-dark-100 flex items-center gap-3">
-          <div className="w-10 h-10 bg-brand-500 rounded-lg flex items-center justify-center text-dark-500 font-bold text-lg">
-            T
+        <div className="px-5 py-6 flex items-center gap-3">
+          <div className="w-9 h-9 bg-gradient-to-br from-pink-500 to-rose-600 rounded-lg flex items-center justify-center shadow-lg shadow-pink-500/20">
+            <Zap size={18} className="text-white" />
           </div>
-          <div>
-            <h1 className="font-bold text-lg text-gray-50">TikBlaster</h1>
-            <p className="text-xs text-gray-400">TikTok Ads Manager</p>
-          </div>
-        </div>
-
-        {/* BC Selector */}
-        <div className="px-4 py-4 border-b border-dark-100">
-          {businessCenters.length === 0 ? (
-            <Link
-              href="/settings"
-              className="w-full px-3 py-2 rounded-lg bg-yellow-900/20 border border-yellow-700/50 flex items-center gap-2 text-sm text-yellow-400 transition-all hover:bg-yellow-900/30"
-            >
-              <AlertTriangle size={16} />
-              <span>Conectar TikTok</span>
-            </Link>
-          ) : (
-            <>
-              <button
-                onClick={() => setBcOpen(!bcOpen)}
-                className="w-full px-3 py-2 rounded-lg bg-dark-200 hover:bg-dark-100 border border-dark-100 flex items-center justify-between text-sm text-gray-200 transition-all"
-              >
-                <span className="font-medium truncate">
-                  {activeBC?.name || 'Selecionar BC'}
-                </span>
-                <ChevronDown
-                  size={16}
-                  className={cn('transition-transform flex-shrink-0', bcOpen ? 'rotate-180' : '')}
-                />
-              </button>
-              {bcOpen && (
-                <div className="mt-2 space-y-1 max-h-40 overflow-y-auto">
-                  {businessCenters.map((bc) => (
-                    <button
-                      key={bc.bc_id}
-                      onClick={() => setActiveBC(bc)}
-                      className={cn(
-                        'w-full text-left px-3 py-2 rounded text-xs transition-all',
-                        activeBC?.bc_id === bc.bc_id
-                          ? 'bg-dark-100 text-brand-400 border border-brand-900'
-                          : 'text-gray-400 hover:bg-dark-200'
-                      )}
-                    >
-                      <div className="font-medium truncate">{bc.name}</div>
-                      <div className="text-gray-500 mt-0.5">{bc.bc_id}</div>
-                    </button>
-                  ))}
-                </div>
-              )}
-            </>
-          )}
+          <h1 className="font-bold text-lg text-white tracking-tight">ShadowAds</h1>
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 overflow-y-auto py-6 px-3">
-          {mainNavItems.map((section, idx) => (
-            <div key={idx} className="mb-8">
-              <p className="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
-                {section.title}
-              </p>
-              <div className="space-y-1">
-                {section.items.map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className={cn(
-                      'flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 text-sm font-medium',
-                      isActive(item.href)
-                        ? 'bg-brand-500 text-dark-500 shadow-lg'
-                        : 'text-gray-300 hover:bg-dark-200 hover:text-gray-100'
-                    )}
-                    onClick={() => {
-                      if (window.innerWidth < 1024) toggleSidebar();
-                    }}
-                  >
-                    {item.icon}
-                    <span>{item.label}</span>
-                    {item.warning && (
-                      <span className="ml-auto">
-                        <AlertTriangle size={14} className="text-yellow-400" />
-                      </span>
-                    )}
-                    {item.badge ? (
-                      <span className="ml-auto text-xs bg-red-500 text-white px-2 py-0.5 rounded-full">
-                        {item.badge}
-                      </span>
-                    ) : null}
-                  </Link>
-                ))}
-              </div>
-            </div>
-          ))}
+        <nav className="flex-1 overflow-y-auto py-2 px-3">
+          <div className="space-y-0.5">
+            {navItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={cn(
+                  'flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 text-sm font-medium',
+                  isActive(item.href)
+                    ? 'bg-pink-600/30 text-pink-300 border border-pink-500/20'
+                    : 'text-gray-400 hover:bg-white/5 hover:text-gray-200'
+                )}
+                onClick={() => {
+                  if (window.innerWidth < 1024) toggleSidebar();
+                }}
+              >
+                <span className={cn(
+                  isActive(item.href) ? 'text-pink-400' : 'text-gray-500'
+                )}>
+                  {item.icon}
+                </span>
+                <span>{item.label}</span>
+                {item.warning && (
+                  <span className="ml-auto">
+                    <AlertTriangle size={14} className="text-yellow-400" />
+                  </span>
+                )}
+              </Link>
+            ))}
+          </div>
         </nav>
 
         {/* User Info */}
-        <div className="px-4 py-4 border-t border-dark-100">
+        <div className="px-4 py-4 border-t border-white/5">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-brand-500 rounded-full flex items-center justify-center text-dark-500 font-bold">
+            <div className="w-9 h-9 bg-gradient-to-br from-pink-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-sm">
               {userName.charAt(0).toUpperCase()}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-gray-100 truncate">{userName}</p>
+              <p className="text-sm font-medium text-gray-200 truncate">{userName}</p>
               <p className="text-xs text-gray-500 truncate">{userEmail}</p>
             </div>
             <button
               onClick={handleLogout}
-              className="p-1.5 hover:bg-dark-200 rounded transition-all text-gray-400 hover:text-gray-200"
+              className="p-1.5 hover:bg-white/10 rounded transition-all text-gray-500 hover:text-gray-300"
               title="Sair"
             >
-              <LogOut size={18} />
+              <LogOut size={16} />
             </button>
           </div>
         </div>
       </aside>
 
+      {/* Mobile overlay */}
       {sidebarOpen && (
         <div
           className="fixed inset-0 bg-black/50 z-20 lg:hidden"

@@ -68,7 +68,6 @@ export default function BusinessCentersPage() {
       if (!res.ok) throw new Error('Falha ao sincronizar');
       const data = await res.json();
       toast.success(`${data.count || 0} anunciantes sincronizados`);
-      // Refresh advertisers
       const advRes = await fetch(`/api/tiktok/advertisers?bc_id=${bcId}&refresh=true`);
       if (advRes.ok) {
         const advData = await advRes.json();
@@ -100,10 +99,10 @@ export default function BusinessCentersPage() {
     return (
       <div className="space-y-8">
         <div>
-          <h1 className="text-3xl font-bold text-gray-50">Business Centers</h1>
-          <p className="text-gray-400 mt-1">Carregando...</p>
+          <h1 className="text-3xl font-bold text-gray-800">Business Centers</h1>
+          <p className="text-gray-500 mt-1">Carregando...</p>
         </div>
-        {[1, 2].map(i => <div key={i} className="h-40 bg-dark-300 rounded-xl animate-pulse" />)}
+        {[1, 2].map(i => <div key={i} className="h-40 bg-gray-100 rounded-xl animate-pulse" />)}
       </div>
     );
   }
@@ -112,8 +111,8 @@ export default function BusinessCentersPage() {
     <div className="space-y-8">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-50">Business Centers</h1>
-          <p className="text-gray-400 mt-1">Gerencie seus Business Centers e contas de anunciantes</p>
+          <h1 className="text-3xl font-bold text-gray-800">Business Centers</h1>
+          <p className="text-gray-500 mt-1">Gerencie seus Business Centers e contas de anunciantes</p>
         </div>
         <Button variant="secondary" size="sm" onClick={fetchBCs}>
           <RefreshCw size={16} /> Atualizar
@@ -121,47 +120,47 @@ export default function BusinessCentersPage() {
       </div>
 
       {error && (
-        <Card className="border-red-900/50 bg-red-900/10">
+        <div className="bg-red-50 border border-red-200 rounded-xl p-4">
           <div className="flex items-center gap-3">
-            <AlertTriangle size={20} className="text-red-400" />
-            <p className="text-red-400 text-sm">{error}</p>
+            <AlertTriangle size={20} className="text-red-500" />
+            <p className="text-red-600 text-sm">{error}</p>
           </div>
-        </Card>
+        </div>
       )}
 
       {bcs.length === 0 ? (
-        <Card className="text-center py-16">
-          <Building2 size={48} className="mx-auto mb-4 text-gray-500" />
-          <h2 className="text-xl font-bold text-gray-100 mb-2">Nenhum Business Center conectado</h2>
-          <p className="text-gray-400 mb-6">
+        <div className="bg-white rounded-xl border border-gray-100 shadow-sm text-center py-16 px-6">
+          <Building2 size={48} className="mx-auto mb-4 text-gray-400" />
+          <h2 className="text-xl font-bold text-gray-800 mb-2">Nenhum Business Center conectado</h2>
+          <p className="text-gray-500 mb-6">
             Conecte sua conta TikTok for Business nas configurações para vincular seus BCs.
           </p>
           <Link href="/settings">
             <Button size="lg">Conectar TikTok</Button>
           </Link>
-        </Card>
+        </div>
       ) : (
         <div className="space-y-4">
           {bcs.map((bc) => (
             <Card key={bc.bc_id} className={cn(
               'transition-all',
-              activeBC?.bc_id === bc.bc_id && 'border-brand-500/50'
+              activeBC?.bc_id === bc.bc_id && 'border-pink-300 shadow-md shadow-pink-100'
             )}>
               <div className="flex items-start justify-between gap-4">
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-2">
-                    <h3 className="text-lg font-semibold text-gray-100">{bc.name}</h3>
+                    <h3 className="text-lg font-semibold text-gray-800">{bc.name}</h3>
                     {bc.is_expired ? (
                       <Badge variant="danger">Token Expirado</Badge>
                     ) : (
                       <Badge variant="success">Ativo</Badge>
                     )}
                     {activeBC?.bc_id === bc.bc_id && (
-                      <Badge variant="info" className="bg-brand-500/20 text-brand-400">Selecionado</Badge>
+                      <Badge variant="info">Selecionado</Badge>
                     )}
                   </div>
-                  <p className="text-sm text-gray-400 font-mono">{bc.bc_id}</p>
-                  <div className="flex items-center gap-6 mt-3 text-sm text-gray-400">
+                  <p className="text-sm text-gray-500 font-mono">{bc.bc_id}</p>
+                  <div className="flex items-center gap-6 mt-3 text-sm text-gray-500">
                     <span className="flex items-center gap-1">
                       <Users size={14} /> {bc.advertiser_count} anunciantes
                     </span>
@@ -186,10 +185,9 @@ export default function BusinessCentersPage() {
                 </div>
               </div>
 
-              {/* Expandable Advertisers */}
               <button
                 onClick={() => handleExpand(bc.bc_id)}
-                className="mt-4 pt-4 border-t border-dark-100 w-full flex items-center gap-2 text-sm text-gray-400 hover:text-gray-200 transition-colors"
+                className="mt-4 pt-4 border-t border-gray-100 w-full flex items-center gap-2 text-sm text-gray-500 hover:text-gray-700 transition-colors"
               >
                 {expandedBC === bc.bc_id ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
                 Ver anunciantes ({bc.advertiser_count})
@@ -198,19 +196,19 @@ export default function BusinessCentersPage() {
               {expandedBC === bc.bc_id && (
                 <div className="mt-3 space-y-2">
                   {loadingAdvs === bc.bc_id ? (
-                    <div className="py-4 text-center text-gray-400 text-sm">Carregando anunciantes...</div>
+                    <div className="py-4 text-center text-gray-500 text-sm">Carregando anunciantes...</div>
                   ) : (advertisers[bc.bc_id] || []).length === 0 ? (
-                    <div className="py-4 text-center text-gray-500 text-sm">Nenhum anunciante encontrado</div>
+                    <div className="py-4 text-center text-gray-400 text-sm">Nenhum anunciante encontrado</div>
                   ) : (
                     (advertisers[bc.bc_id] || []).map((adv: any) => (
-                      <div key={adv.advertiser_id} className="bg-dark-400/50 rounded-lg p-3 flex items-center justify-between">
+                      <div key={adv.advertiser_id} className="bg-gray-50 rounded-lg p-3 flex items-center justify-between border border-gray-100">
                         <div>
-                          <p className="text-sm font-medium text-gray-200">{adv.advertiser_name}</p>
+                          <p className="text-sm font-medium text-gray-700">{adv.advertiser_name}</p>
                           <p className="text-xs text-gray-500 font-mono">{adv.advertiser_id}</p>
                         </div>
                         <div className="flex items-center gap-4">
                           {adv.balance !== undefined && (
-                            <span className="text-sm text-gray-400">{adv.currency} {parseFloat(adv.balance || 0).toFixed(2)}</span>
+                            <span className="text-sm text-gray-500">{adv.currency} {parseFloat(adv.balance || 0).toFixed(2)}</span>
                           )}
                           <span className={cn('text-xs font-medium', getStatusColor(adv.status || 'ACTIVE'))}>
                             {adv.status || 'ACTIVE'}
@@ -227,18 +225,18 @@ export default function BusinessCentersPage() {
       )}
 
       {bcs.length > 0 && bcs.some((b: any) => b.is_expired) && (
-        <Card className="border-yellow-900/50 bg-yellow-900/10">
+        <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4">
           <div className="flex items-center gap-3">
-            <AlertTriangle size={20} className="text-yellow-400" />
+            <AlertTriangle size={20} className="text-yellow-500" />
             <div>
-              <p className="text-yellow-400 font-medium text-sm">Token expirado</p>
-              <p className="text-gray-400 text-sm">Re-autentique nas configurações para renovar o token.</p>
+              <p className="text-yellow-700 font-medium text-sm">Token expirado</p>
+              <p className="text-gray-500 text-sm">Re-autentique nas configurações para renovar o token.</p>
             </div>
             <Link href="/settings" className="ml-auto">
               <Button variant="secondary" size="sm">Re-autenticar</Button>
             </Link>
           </div>
-        </Card>
+        </div>
       )}
     </div>
   );

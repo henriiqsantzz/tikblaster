@@ -5,12 +5,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 :root {
-  --brand: #00e6a0;
-  --brand-dark: #00cc8e;
-  --dark-bg: #0a0c10;
-  --dark-card: #13161b;
-  --dark-border: #1e2128;
-  --dark-hover: #2a2d35;
+  --brand: #ec4899;
+  --brand-dark: #db2777;
+  --dark-bg: #0f0a0d;
+  --dark-card: #1a1118;
+  --dark-border: #2d1f28;
+  --dark-hover: #3d2a35;
 }
 
 * {
@@ -20,8 +20,8 @@
 }
 
 body {
-  background-color: var(--dark-bg);
-  color: #e2e8f0;
+  background-color: #faf5f7;
+  color: #1a1118;
   font-family: 'Inter', system-ui, sans-serif;
 }
 
@@ -31,31 +31,31 @@ body {
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--dark-bg);
+  background: #f5f0f2;
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--dark-border);
+  background: #d4c5cc;
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--dark-hover);
+  background: #b8a5ae;
 }
 
 /* Selection */
 ::selection {
-  background: rgba(0, 230, 160, 0.3);
+  background: rgba(236, 72, 153, 0.2);
 }
 
 /* Glass effect */
 .glass {
-  background: rgba(19, 22, 27, 0.8);
+  background: rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(12px);
-  border: 1px solid rgba(30, 33, 40, 0.6);
+  border: 1px solid rgba(236, 72, 153, 0.1);
 }
 
 /* Glow effect */
 .glow-brand {
-  box-shadow: 0 0 20px rgba(0, 230, 160, 0.15);
+  box-shadow: 0 0 20px rgba(236, 72, 153, 0.15);
 }
 
 /* Card animation */
@@ -64,7 +64,7 @@ body {
 }
 .card-hover:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
 }
 
 /* Pulse for notifications */
@@ -78,7 +78,7 @@ body {
 
 /* Loading spinner */
 .spinner {
-  border: 3px solid var(--dark-border);
+  border: 3px solid #e5dde0;
   border-top: 3px solid var(--brand);
   border-radius: 50%;
   width: 24px;
@@ -90,7 +90,7 @@ body {
 }
 
 /* Status badges */
-.status-active { color: #00e6a0; }
+.status-active { color: #10b981; }
 .status-paused { color: #f59e0b; }
 .status-error { color: #ef4444; }
 .status-pending { color: #3b82f6; }

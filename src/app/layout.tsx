@@ -3,8 +3,8 @@ import './globals.css';
 import Providers from './providers';
 
 export const metadata: Metadata = {
-  title: 'TikBlaster - TikTok Ads Management',
-  description: 'Manage and optimize your TikTok advertising campaigns with ease',
+  title: 'ShadowAds - TikTok Ads Management',
+  description: 'Gerencie e escale suas campanhas de TikTok Ads com facilidade',
   manifest: '/manifest.json',
   icons: {
     icon: '/favicon.ico',
@@ -21,10 +21,10 @@ export default function RootLayout({
       <head>
         <meta charSet="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta name="theme-color" content="#00e6a0" />
+        <meta name="theme-color" content="#ec4899" />
         <link rel="manifest" href="/manifest.json" />
       </head>
-      <body className="bg-dark-500 text-gray-100">
+      <body className="text-gray-800" style={{ backgroundColor: '#faf5f7' }}>
         <Providers>
           {children}
         </Providers>

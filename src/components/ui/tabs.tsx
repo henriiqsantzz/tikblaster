@@ -21,13 +21,7 @@ interface TabsProps {
 
 export type { Tab, TabsProps };
 
-const Tabs: React.FC<TabsProps> = ({
-  tabs,
-  defaultTab,
-  onChange,
-  className,
-  size = 'md',
-}) => {
+const Tabs: React.FC<TabsProps> = ({ tabs, defaultTab, onChange, className, size = 'md' }) => {
   const [activeTab, setActiveTab] = useState(defaultTab || tabs[0]?.id);
 
   const handleTabChange = (tabId: string) => {
@@ -43,8 +37,7 @@ const Tabs: React.FC<TabsProps> = ({
 
   return (
     <div className={className}>
-      {/* Tab navigation */}
-      <div className="flex gap-1 border-b border-dark-100 overflow-x-auto">
+      <div className="flex gap-1 border-b border-gray-200 overflow-x-auto">
         {tabs.map((tab) => (
           <button
             key={tab.id}
@@ -55,8 +48,8 @@ const Tabs: React.FC<TabsProps> = ({
               activeSizeStyles[size],
               'border-b-2 rounded-t-lg',
               activeTab === tab.id
-                ? 'border-brand-500 text-brand-400 bg-dark-400/50'
-                : 'border-transparent text-gray-400 hover:text-gray-200',
+                ? 'border-pink-500 text-pink-600 bg-pink-50'
+                : 'border-transparent text-gray-500 hover:text-gray-700',
               tab.disabled && 'opacity-50 cursor-not-allowed'
             )}
           >
@@ -65,16 +58,11 @@ const Tabs: React.FC<TabsProps> = ({
           </button>
         ))}
       </div>
-
-      {/* Tab content */}
       <div className="mt-4">
         {tabs.map((tab) => (
           <div
             key={tab.id}
-            className={cn(
-              'transition-all duration-200',
-              activeTab === tab.id ? 'block opacity-100' : 'hidden opacity-0'
-            )}
+            className={cn('transition-all duration-200', activeTab === tab.id ? 'block opacity-100' : 'hidden opacity-0')}
           >
             {tab.content}
           </div>
