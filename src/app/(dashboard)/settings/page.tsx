@@ -127,8 +127,8 @@ export default function SettingsPage() {
     return (
       <div className="space-y-8">
         <div>
-          <h1 className="text-3xl font-bold text-gray-800">Configurações</h1>
-          <p className="text-gray-500 mt-1">Carregando...</p>
+          <h1 className="text-xl font-semibold text-gray-900">Configurações</h1>
+          <p className="text-sm text-gray-500 mt-0.5">Carregando...</p>
         </div>
         <div className="space-y-6">
           {[1, 2, 3].map(i => (
@@ -142,19 +142,19 @@ export default function SettingsPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold text-gray-800">Configurações</h1>
-        <p className="text-gray-500 mt-1">Gerencie suas preferências e integrações</p>
+        <h1 className="text-xl font-semibold text-gray-900">Configurações</h1>
+        <p className="text-sm text-gray-500 mt-0.5">Gerencie suas preferências e integrações</p>
       </div>
 
       {/* Profile Section */}
-      <Card title="Perfil" icon={<User size={24} />}>
+      <Card title="Perfil" icon={<User size={20} />}>
         <div className="space-y-4">
-          <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
-            <p className="text-sm text-gray-500 mb-1">Email</p>
-            <p className="text-gray-800 font-medium">{userEmail}</p>
+          <div className="bg-gray-50 rounded-lg p-4 border border-[#f0f0ee]">
+            <p className="text-xs text-gray-500 mb-1">Email</p>
+            <p className="text-sm text-gray-900 font-medium">{userEmail}</p>
           </div>
 
-          <div className="pt-4 border-t border-gray-100">
+          <div className="pt-4 border-t border-[#f0f0ee]">
             <h4 className="text-sm font-semibold text-gray-700 mb-4">Alterar Senha</h4>
             <div className="space-y-3">
               <Input
@@ -185,19 +185,19 @@ export default function SettingsPage() {
       </Card>
 
       {/* TikTok Integration Section */}
-      <Card title="Integração TikTok" icon={<LinkIcon size={24} />}>
+      <Card title="Integração TikTok" icon={<LinkIcon size={20} />}>
         <div className="space-y-4">
           {tiktokConnected ? (
             <>
-              <div className="bg-green-50 rounded-lg p-4 border border-green-200">
+              <div className="bg-emerald-50 rounded-lg p-4 border border-emerald-200">
                 <div className="flex items-center gap-2 mb-3">
-                  <div className="w-3 h-3 bg-green-400 rounded-full" />
-                  <p className="text-sm font-medium text-green-600">Conectado</p>
+                  <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full" />
+                  <p className="text-sm font-medium text-emerald-700">Conectado</p>
                 </div>
                 {businessCenters.map((bc: any) => (
                   <div key={bc.bc_id} className="mb-3 last:mb-0">
                     <p className="text-sm text-gray-600">
-                      Business Center: <span className="font-mono text-gray-800">{bc.name}</span>
+                      Business Center: <span className="font-mono text-gray-900">{bc.name}</span>
                     </p>
                     <p className="text-xs text-gray-500 mt-1">
                       ID: {bc.bc_id}
@@ -217,10 +217,10 @@ export default function SettingsPage() {
             </>
           ) : (
             <>
-              <div className="bg-yellow-50 rounded-lg p-4 border border-yellow-200">
+              <div className="bg-amber-50 rounded-lg p-4 border border-amber-200">
                 <div className="flex items-center gap-2 mb-2">
-                  <div className="w-3 h-3 bg-yellow-400 rounded-full" />
-                  <p className="text-sm font-medium text-yellow-600">Desconectado</p>
+                  <div className="w-1.5 h-1.5 bg-amber-500 rounded-full" />
+                  <p className="text-sm font-medium text-amber-700">Desconectado</p>
                 </div>
                 <p className="text-sm text-gray-600">
                   Conecte sua conta TikTok for Business para usar todas as funcionalidades do ShadowAds.
@@ -238,7 +238,7 @@ export default function SettingsPage() {
       </Card>
 
       {/* Notifications Section */}
-      <Card title="Notificações" icon={<Bell size={24} />}>
+      <Card title="Notificações" icon={<Bell size={20} />}>
         <div className="space-y-4">
           <Toggle
             label="Notificações Push"
@@ -250,7 +250,7 @@ export default function SettingsPage() {
       </Card>
 
       {/* Security */}
-      <Card title="Segurança" icon={<Shield size={24} />}>
+      <Card title="Segurança" icon={<Shield size={20} />}>
         <div className="space-y-4">
           <p className="text-sm text-gray-500">
             Suas credenciais TikTok são armazenadas de forma segura e criptografada.

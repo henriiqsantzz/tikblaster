@@ -133,18 +133,16 @@ export default function CampaignsPage() {
     return (
       <div className="space-y-8">
         <div>
-          <h1 className="text-3xl font-bold text-gray-800">Campanhas</h1>
-          <p className="text-gray-500 mt-1">Criador em lote de campanhas TikTok</p>
+          <h1 className="text-xl font-semibold text-gray-900">Campanhas</h1>
+          <p className="text-sm text-gray-500 mt-0.5">Criador em lote de campanhas TikTok</p>
         </div>
-        <div className="bg-white rounded-xl border border-gray-100 shadow-sm text-center py-16 px-6">
-          <AlertTriangle size={48} className="mx-auto mb-4 text-yellow-500" />
-          <h2 className="text-xl font-bold text-gray-800 mb-2">Conta TikTok não conectada</h2>
-          <p className="text-gray-500 mb-6">Conecte sua conta para criar campanhas em lote.</p>
-          <Link href="/settings">
-            <button className="bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-semibold px-6 py-3 rounded-lg transition-all shadow-lg shadow-pink-500/20">
-              Ir para Configurações
-            </button>
-          </Link>
+        <div className="bg-white rounded-xl border border-[#e8e8e6] shadow-card text-center py-16 px-6">
+          <div className="w-10 h-10 bg-gray-50 rounded-lg flex items-center justify-center mx-auto mb-4">
+            <AlertTriangle size={20} className="text-gray-400" />
+          </div>
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">Conta TikTok não conectada</h2>
+          <p className="text-sm text-gray-500 mb-6">Conecte sua conta para criar campanhas em lote.</p>
+          <Link href="/settings"><Button size="lg">Ir para Configurações</Button></Link>
         </div>
       </div>
     );
@@ -153,8 +151,8 @@ export default function CampaignsPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold text-gray-800">Campanhas</h1>
-        <p className="text-gray-500 mt-1">Criador em lote de campanhas TikTok - BC: {activeBC.name || activeBC.bc_id}</p>
+        <h1 className="text-xl font-semibold text-gray-900">Campanhas</h1>
+        <p className="text-sm text-gray-500 mt-0.5">Criador em lote de campanhas TikTok - BC: {activeBC.name || activeBC.bc_id}</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
@@ -165,7 +163,7 @@ export default function CampaignsPage() {
               <div>
                 <p className="font-semibold text-gray-700 flex items-center gap-2 mb-2"><Plus size={16} /> Campanha</p>
                 <div className="pl-4">
-                  <div className="px-3 py-2 rounded bg-gray-50 text-xs text-gray-600 border border-gray-100">
+                  <div className="px-3 py-2 rounded bg-gray-50 text-xs text-gray-600 border border-[#f0f0ee]">
                     {campaignForm.name || 'Nova Campanha'}
                   </div>
                 </div>
@@ -173,13 +171,13 @@ export default function CampaignsPage() {
               <div>
                 <p className="font-semibold text-gray-700 flex items-center gap-2 mb-2"><ChevronRight size={16} /> Conjunto</p>
                 <div className="pl-4">
-                  <div className="px-3 py-2 rounded bg-gray-50 text-xs text-gray-600 border border-gray-100">Conjunto 1</div>
+                  <div className="px-3 py-2 rounded bg-gray-50 text-xs text-gray-600 border border-[#f0f0ee]">Conjunto 1</div>
                 </div>
               </div>
               <div>
                 <p className="font-semibold text-gray-700 flex items-center gap-2 mb-2"><ChevronRight size={16} /> Criativo</p>
                 <div className="pl-4">
-                  <div className="px-3 py-2 rounded bg-gray-50 text-xs text-gray-600 border border-gray-100">Criativo 1</div>
+                  <div className="px-3 py-2 rounded bg-gray-50 text-xs text-gray-600 border border-[#f0f0ee]">Criativo 1</div>
                 </div>
               </div>
             </div>
@@ -189,21 +187,25 @@ export default function CampaignsPage() {
         {/* Right Content */}
         <div className="lg:col-span-3 space-y-8">
           {/* Step Indicator */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className={cn('w-10 h-10 rounded-full flex items-center justify-center font-bold', currentStep === 'campaign' ? 'bg-pink-500 text-white' : 'bg-gray-100 text-gray-400')}>1</div>
-              <span className="text-sm text-gray-600">Campanha</span>
+          <div className="flex items-center justify-between bg-white rounded-xl border border-[#e8e8e6] shadow-card px-6 py-4">
+            <div className="flex items-center gap-2.5">
+              <div className={cn('w-8 h-8 rounded-lg flex items-center justify-center text-sm font-semibold transition-colors', currentStep === 'campaign' ? 'bg-accent-500 text-white' : 'bg-gray-100 text-gray-400')}>1</div>
+              <span className={cn('text-sm', currentStep === 'campaign' ? 'text-gray-900 font-medium' : 'text-gray-500')}>Campanha</span>
             </div>
-            <div className="h-1 flex-1 mx-4 bg-gray-100 rounded">
-              <div className="h-full bg-pink-500 rounded transition-all" style={{ width: currentStep === 'campaign' ? '0%' : currentStep === 'adgroup' ? '50%' : '100%' }} />
+            <div className="h-0.5 flex-1 mx-4 bg-gray-100 rounded-full">
+              <div className="h-full bg-accent-500 rounded-full transition-all duration-300" style={{ width: currentStep === 'campaign' ? '0%' : currentStep === 'adgroup' ? '50%' : '100%' }} />
             </div>
-            <div className={cn('w-10 h-10 rounded-full flex items-center justify-center font-bold', currentStep === 'adgroup' ? 'bg-pink-500 text-white' : 'bg-gray-100 text-gray-400')}>2</div>
-            <span className="text-sm text-gray-600">Conjuntos</span>
-            <div className="h-1 flex-1 mx-4 bg-gray-100 rounded">
-              <div className="h-full bg-pink-500 rounded transition-all" style={{ width: currentStep === 'creative' ? '100%' : '0%' }} />
+            <div className="flex items-center gap-2.5">
+              <div className={cn('w-8 h-8 rounded-lg flex items-center justify-center text-sm font-semibold transition-colors', currentStep === 'adgroup' ? 'bg-accent-500 text-white' : 'bg-gray-100 text-gray-400')}>2</div>
+              <span className={cn('text-sm', currentStep === 'adgroup' ? 'text-gray-900 font-medium' : 'text-gray-500')}>Conjuntos</span>
             </div>
-            <div className={cn('w-10 h-10 rounded-full flex items-center justify-center font-bold', currentStep === 'creative' ? 'bg-pink-500 text-white' : 'bg-gray-100 text-gray-400')}>3</div>
-            <span className="text-sm text-gray-600">Criativos</span>
+            <div className="h-0.5 flex-1 mx-4 bg-gray-100 rounded-full">
+              <div className="h-full bg-accent-500 rounded-full transition-all duration-300" style={{ width: currentStep === 'creative' ? '100%' : '0%' }} />
+            </div>
+            <div className="flex items-center gap-2.5">
+              <div className={cn('w-8 h-8 rounded-lg flex items-center justify-center text-sm font-semibold transition-colors', currentStep === 'creative' ? 'bg-accent-500 text-white' : 'bg-gray-100 text-gray-400')}>3</div>
+              <span className={cn('text-sm', currentStep === 'creative' ? 'text-gray-900 font-medium' : 'text-gray-500')}>Criativos</span>
+            </div>
           </div>
 
           {/* Campaign Step */}
@@ -254,7 +256,7 @@ export default function CampaignsPage() {
                 </div>
               </Card>
               <div className="flex justify-end">
-                <Button onClick={handleNextStep} size="lg" disabled={selectedAccounts.length === 0}>PRÓXIMO: CONJUNTOS</Button>
+                <Button onClick={handleNextStep} size="md" disabled={selectedAccounts.length === 0}>Próximo: Conjuntos</Button>
               </div>
             </div>
           )}
@@ -291,7 +293,7 @@ export default function CampaignsPage() {
                     <div className="space-y-2">
                       {['13-17', '18-24', '25-34', '35-44', '45-54', '55+'].map(age => (
                         <label key={age} className="flex items-center gap-3 cursor-pointer">
-                          <input type="checkbox" checked={adgroupForm.ageGroups.includes(age)} onChange={(e) => setAdgroupForm({ ...adgroupForm, ageGroups: e.target.checked ? [...adgroupForm.ageGroups, age] : adgroupForm.ageGroups.filter(a => a !== age) })} className="w-4 h-4 rounded border border-gray-300 bg-white cursor-pointer accent-pink-500" />
+                          <input type="checkbox" checked={adgroupForm.ageGroups.includes(age)} onChange={(e) => setAdgroupForm({ ...adgroupForm, ageGroups: e.target.checked ? [...adgroupForm.ageGroups, age] : adgroupForm.ageGroups.filter(a => a !== age) })} className="w-4 h-4 rounded border border-gray-300 bg-white cursor-pointer accent-accent" />
                           <span className="text-sm text-gray-600">{age} anos</span>
                         </label>
                       ))}
@@ -302,7 +304,7 @@ export default function CampaignsPage() {
                     <div className="space-y-2">
                       {['iOS', 'Android'].map(os => (
                         <label key={os} className="flex items-center gap-3 cursor-pointer">
-                          <input type="checkbox" checked={adgroupForm.os.includes(os)} onChange={(e) => setAdgroupForm({ ...adgroupForm, os: e.target.checked ? [...adgroupForm.os, os] : adgroupForm.os.filter(o => o !== os) })} className="w-4 h-4 rounded border border-gray-300 bg-white cursor-pointer accent-pink-500" />
+                          <input type="checkbox" checked={adgroupForm.os.includes(os)} onChange={(e) => setAdgroupForm({ ...adgroupForm, os: e.target.checked ? [...adgroupForm.os, os] : adgroupForm.os.filter(o => o !== os) })} className="w-4 h-4 rounded border border-gray-300 bg-white cursor-pointer accent-accent" />
                           <span className="text-sm text-gray-600">{os}</span>
                         </label>
                       ))}
@@ -311,8 +313,8 @@ export default function CampaignsPage() {
                 </div>
               </Card>
               <div className="flex justify-between">
-                <Button variant="secondary" size="lg" onClick={() => setCurrentStep('campaign')}>VOLTAR</Button>
-                <Button onClick={handleNextStep} size="lg">PRÓXIMO: CRIATIVOS</Button>
+                <Button variant="secondary" size="md" onClick={() => setCurrentStep('campaign')}>Voltar</Button>
+                <Button onClick={handleNextStep} size="md">Próximo: Criativos</Button>
               </div>
             </div>
           )}
@@ -336,7 +338,7 @@ export default function CampaignsPage() {
                 </div>
               </Card>
               <Card title="Arquivo Criativo">
-                <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
+                <div className="bg-gray-50 rounded-lg p-4 border border-[#f0f0ee]">
                   <p className="text-sm text-gray-600 mb-2">
                     Para o criativo (vídeo/imagem), faça o upload diretamente na plataforma TikTok Ads Manager e use o video_id ou image_id gerado.
                   </p>
@@ -352,9 +354,9 @@ export default function CampaignsPage() {
                 </div>
               </Card>
               <div className="flex justify-between">
-                <Button variant="secondary" size="lg" onClick={() => setCurrentStep('adgroup')}>VOLTAR</Button>
-                <Button onClick={handlePublish} size="lg" loading={publishing} disabled={publishing}>
-                  {publishing ? 'PUBLICANDO...' : `PUBLICAR EM ${selectedAccounts.length} CONTA(S)`}
+                <Button variant="secondary" size="md" onClick={() => setCurrentStep('adgroup')}>Voltar</Button>
+                <Button onClick={handlePublish} size="md" loading={publishing} disabled={publishing}>
+                  {publishing ? 'Publicando...' : `Publicar em ${selectedAccounts.length} conta(s)`}
                 </Button>
               </div>
             </div>
@@ -363,16 +365,16 @@ export default function CampaignsPage() {
       </div>
 
       {/* Bottom Stats Bar */}
-      <div className="bg-white rounded-xl border border-gray-100 shadow-sm px-6 py-4 sticky bottom-0">
+      <div className="bg-white rounded-xl border border-[#e8e8e6] shadow-card px-6 py-4 sticky bottom-0">
         <div className="flex items-center justify-between flex-wrap gap-4">
           <div className="flex items-center gap-6">
             <div>
-              <p className="text-xs text-gray-500">Contas Selecionadas</p>
-              <p className="text-lg font-bold text-pink-600">{selectedAccounts.length}</p>
+              <p className="text-xs text-gray-500 mb-1">Contas Selecionadas</p>
+              <p className="text-lg font-bold text-accent-500">{selectedAccounts.length}</p>
             </div>
             <div>
-              <p className="text-xs text-gray-500">Campanhas a Criar</p>
-              <p className="text-lg font-bold text-gray-800">{selectedAccounts.length}</p>
+              <p className="text-xs text-gray-500 mb-1">Campanhas a Criar</p>
+              <p className="text-lg font-bold text-gray-900">{selectedAccounts.length}</p>
             </div>
           </div>
           <div className="text-sm text-gray-500 flex items-center gap-2">
