@@ -127,7 +127,7 @@ export default function SettingsPage() {
     return (
       <div className="space-y-8">
         <div>
-          <h1 className="text-xl font-semibold text-gray-900">Configurações</h1>
+          <h1 className="text-2xl font-bold text-gray-900">Configurações</h1>
           <p className="text-sm text-gray-500 mt-0.5">Carregando...</p>
         </div>
         <div className="space-y-6">
@@ -142,19 +142,19 @@ export default function SettingsPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-xl font-semibold text-gray-900">Configurações</h1>
+        <h1 className="text-2xl font-bold text-gray-900">Configurações</h1>
         <p className="text-sm text-gray-500 mt-0.5">Gerencie suas preferências e integrações</p>
       </div>
 
       {/* Profile Section */}
       <Card title="Perfil" icon={<User size={20} />}>
         <div className="space-y-4">
-          <div className="bg-gray-50 rounded-lg p-4 border border-[#f0f0ee]">
+          <div className="bg-gray-50 rounded-lg p-4 border border-[#f0e4e9]">
             <p className="text-xs text-gray-500 mb-1">Email</p>
             <p className="text-sm text-gray-900 font-medium">{userEmail}</p>
           </div>
 
-          <div className="pt-4 border-t border-[#f0f0ee]">
+          <div className="pt-4 border-t border-[#f0e4e9]">
             <h4 className="text-sm font-semibold text-gray-700 mb-4">Alterar Senha</h4>
             <div className="space-y-3">
               <Input

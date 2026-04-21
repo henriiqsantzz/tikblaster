@@ -2,6 +2,7 @@
 
 import React, { useEffect } from 'react';
 import { cn } from '@/lib/utils';
+import { X } from 'lucide-react';
 
 interface ModalProps {
   isOpen: boolean;
@@ -34,29 +35,26 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, classNa
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className="absolute inset-0 bg-black/30 backdrop-blur-sm transition-opacity" onClick={onClose} />
+      <div className="absolute inset-0 bg-black/20 backdrop-blur-[2px]" onClick={onClose} />
       <div
         className={cn(
-          'relative z-10 w-full rounded-xl bg-white border border-gray-200 shadow-2xl',
-          'max-h-[90vh] overflow-auto',
+          'relative z-10 w-full rounded-xl bg-white border border-[#e8e8e6] shadow-xl',
+          'max-h-[90vh] overflow-auto mx-4',
           sizeStyles[size],
-          'mx-4 animation-in fade-in slide-in-from-bottom-4 duration-200',
           className
         )}
       >
         {(title || closeButton) && (
-          <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
-            {title && <h2 className="text-xl font-semibold text-gray-800">{title}</h2>}
+          <div className="flex items-center justify-between px-5 py-4 border-b border-[#e8e8e6]">
+            {title && <h2 className="text-[0.9375rem] font-semibold text-gray-900">{title}</h2>}
             {closeButton && (
-              <button onClick={onClose} className="ml-auto text-gray-400 hover:text-gray-600 transition-colors">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
+              <button onClick={onClose} className="ml-auto p-1 text-gray-400 hover:text-gray-600 rounded-md hover:bg-gray-100 transition-colors">
+                <X size={16} />
               </button>
             )}
           </div>
         )}
-        <div className="px-6 py-4">{children}</div>
+        <div className="px-5 py-4">{children}</div>
       </div>
     </div>
   );

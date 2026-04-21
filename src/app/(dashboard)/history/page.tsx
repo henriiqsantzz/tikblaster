@@ -67,10 +67,10 @@ export default function HistoryPage() {
     return (
       <div className="space-y-8">
         <div>
-          <h1 className="text-3xl font-bold text-gray-800">Histórico de Lotes</h1>
-          <p className="text-gray-500 mt-1">Carregando...</p>
+          <h1 className="text-2xl font-bold text-gray-900">Histórico de Lotes</h1>
+          <p className="text-sm text-gray-500 mt-0.5">Carregando...</p>
         </div>
-        {[1, 2, 3].map(i => <div key={i} className="h-40 bg-gray-100 rounded-xl animate-pulse" />)}
+        {[1, 2, 3].map(i => <div key={i} className="h-36 bg-gray-100 rounded-xl animate-pulse" />)}
       </div>
     );
   }
@@ -78,8 +78,8 @@ export default function HistoryPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold text-gray-800">Histórico de Lotes</h1>
-        <p className="text-gray-500 mt-1">Acompanhe o histórico de criação de campanhas e contas em lote</p>
+        <h1 className="text-2xl font-bold text-gray-900">Histórico de Lotes</h1>
+        <p className="text-sm text-gray-500 mt-0.5">Acompanhe o histórico de criação de campanhas e contas em lote</p>
       </div>
 
       {error && (
@@ -89,7 +89,7 @@ export default function HistoryPage() {
       )}
 
       {jobs.length === 0 ? (
-        <div className="bg-white rounded-xl border border-gray-100 shadow-sm text-center py-12 px-6">
+        <div className="bg-white rounded-xl border border-[#f0e4e9] shadow-card hover-glow text-center py-12 px-6">
           <p className="text-gray-500 text-lg mb-2">Nenhum lote encontrado</p>
           <p className="text-gray-400 text-sm">Crie campanhas ou contas em lote para ver o histórico aqui.</p>
         </div>
@@ -108,7 +108,7 @@ export default function HistoryPage() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-4 mb-3">
                       <div>
-                        <h3 className="text-lg font-semibold text-gray-800">
+                        <h3 className="text-lg font-semibold text-gray-900">
                           Lote {job.id.substring(0, 12)}...
                         </h3>
                         <p className="text-sm text-gray-500 mt-1">
@@ -130,21 +130,21 @@ export default function HistoryPage() {
                     </div>
 
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                      <div className="bg-gray-50 rounded-lg p-3 border border-gray-100">
+                      <div className="bg-gray-50 rounded-lg p-3 border border-[#f0e4e9]">
                         <p className="text-xs text-gray-500 mb-1">Total</p>
-                        <p className="text-lg font-bold text-gray-800">{total}</p>
+                        <p className="text-lg font-bold text-gray-900">{total}</p>
                       </div>
-                      <div className="bg-gray-50 rounded-lg p-3 border border-gray-100">
+                      <div className="bg-gray-50 rounded-lg p-3 border border-[#f0e4e9]">
                         <p className="text-xs text-gray-500 mb-1">Concluídos</p>
                         <p className="text-lg font-bold text-green-600">{completed}</p>
                       </div>
-                      <div className="bg-gray-50 rounded-lg p-3 border border-gray-100">
+                      <div className="bg-gray-50 rounded-lg p-3 border border-[#f0e4e9]">
                         <p className="text-xs text-gray-500 mb-1">Falhados</p>
                         <p className="text-lg font-bold text-red-500">{failed}</p>
                       </div>
-                      <div className="bg-gray-50 rounded-lg p-3 border border-gray-100">
+                      <div className="bg-gray-50 rounded-lg p-3 border border-[#f0e4e9]">
                         <p className="text-xs text-gray-500 mb-1">Taxa de Sucesso</p>
-                        <p className="text-lg font-bold text-pink-600">{successRate.toFixed(1)}%</p>
+                        <p className="text-lg font-bold text-accent-500">{successRate.toFixed(1)}%</p>
                       </div>
                     </div>
 
@@ -155,14 +155,14 @@ export default function HistoryPage() {
                       </div>
                       <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
                         <div
-                          className="h-full bg-gradient-to-r from-pink-500 to-rose-400 transition-all duration-300"
+                          className="h-full bg-accent-500 transition-all duration-300"
                           style={{ width: `${total > 0 ? ((completed + failed) / total) * 100 : 0}%` }}
                         />
                       </div>
                     </div>
 
                     {job.results && job.results.length > 0 && (
-                      <div className="mt-4 pt-4 border-t border-gray-100">
+                      <div className="mt-4 pt-4 border-t border-[#f0e4e9]">
                         <p className="text-xs text-gray-500 mb-2">Detalhes:</p>
                         <div className="space-y-1 max-h-32 overflow-y-auto">
                           {job.results.map((r: any, idx: number) => (

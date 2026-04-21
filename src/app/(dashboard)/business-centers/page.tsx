@@ -99,10 +99,10 @@ export default function BusinessCentersPage() {
     return (
       <div className="space-y-8">
         <div>
-          <h1 className="text-3xl font-bold text-gray-800">Business Centers</h1>
-          <p className="text-gray-500 mt-1">Carregando...</p>
+          <h1 className="text-2xl font-bold text-gray-900">Business Centers</h1>
+          <p className="text-sm text-gray-500 mt-0.5">Carregando...</p>
         </div>
-        {[1, 2].map(i => <div key={i} className="h-40 bg-gray-100 rounded-xl animate-pulse" />)}
+        {[1, 2].map(i => <div key={i} className="h-36 bg-gray-100 rounded-xl animate-pulse" />)}
       </div>
     );
   }
@@ -111,8 +111,8 @@ export default function BusinessCentersPage() {
     <div className="space-y-8">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-800">Business Centers</h1>
-          <p className="text-gray-500 mt-1">Gerencie seus Business Centers e contas de anunciantes</p>
+          <h1 className="text-2xl font-bold text-gray-900">Business Centers</h1>
+          <p className="text-sm text-gray-500 mt-0.5">Gerencie seus Business Centers e contas de anunciantes</p>
         </div>
         <Button variant="secondary" size="sm" onClick={fetchBCs}>
           <RefreshCw size={16} /> Atualizar
@@ -129,10 +129,12 @@ export default function BusinessCentersPage() {
       )}
 
       {bcs.length === 0 ? (
-        <div className="bg-white rounded-xl border border-gray-100 shadow-sm text-center py-16 px-6">
-          <Building2 size={48} className="mx-auto mb-4 text-gray-400" />
-          <h2 className="text-xl font-bold text-gray-800 mb-2">Nenhum Business Center conectado</h2>
-          <p className="text-gray-500 mb-6">
+        <div className="bg-white rounded-xl border border-[#f0e4e9] shadow-card hover-glow text-center py-16 px-6">
+          <div className="w-10 h-10 bg-accent-50 rounded-xl flex items-center justify-center mx-auto mb-4">
+            <Building2 size={20} className="text-accent-400" />
+          </div>
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">Nenhum Business Center conectado</h2>
+          <p className="text-sm text-gray-500 mb-6">
             Conecte sua conta TikTok for Business nas configurações para vincular seus BCs.
           </p>
           <Link href="/settings">
@@ -144,12 +146,12 @@ export default function BusinessCentersPage() {
           {bcs.map((bc) => (
             <Card key={bc.bc_id} className={cn(
               'transition-all',
-              activeBC?.bc_id === bc.bc_id && 'border-pink-300 shadow-md shadow-pink-100'
+              activeBC?.bc_id === bc.bc_id && 'border-accent-300 shadow-pink'
             )}>
               <div className="flex items-start justify-between gap-4">
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-2">
-                    <h3 className="text-lg font-semibold text-gray-800">{bc.name}</h3>
+                    <h3 className="text-lg font-semibold text-gray-900">{bc.name}</h3>
                     {bc.is_expired ? (
                       <Badge variant="danger">Token Expirado</Badge>
                     ) : (
@@ -187,7 +189,7 @@ export default function BusinessCentersPage() {
 
               <button
                 onClick={() => handleExpand(bc.bc_id)}
-                className="mt-4 pt-4 border-t border-gray-100 w-full flex items-center gap-2 text-sm text-gray-500 hover:text-gray-700 transition-colors"
+                className="mt-4 pt-4 border-t border-[#f0e4e9] w-full flex items-center gap-2 text-sm text-gray-500 hover:text-gray-700 transition-colors"
               >
                 {expandedBC === bc.bc_id ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
                 Ver anunciantes ({bc.advertiser_count})
@@ -201,7 +203,7 @@ export default function BusinessCentersPage() {
                     <div className="py-4 text-center text-gray-400 text-sm">Nenhum anunciante encontrado</div>
                   ) : (
                     (advertisers[bc.bc_id] || []).map((adv: any) => (
-                      <div key={adv.advertiser_id} className="bg-gray-50 rounded-lg p-3 flex items-center justify-between border border-gray-100">
+                      <div key={adv.advertiser_id} className="bg-gray-50 rounded-lg p-3 flex items-center justify-between border border-[#f0e4e9]">
                         <div>
                           <p className="text-sm font-medium text-gray-700">{adv.advertiser_name}</p>
                           <p className="text-xs text-gray-500 font-mono">{adv.advertiser_id}</p>
@@ -225,11 +227,11 @@ export default function BusinessCentersPage() {
       )}
 
       {bcs.length > 0 && bcs.some((b: any) => b.is_expired) && (
-        <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4">
+        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
           <div className="flex items-center gap-3">
-            <AlertTriangle size={20} className="text-yellow-500" />
+            <AlertTriangle size={20} className="text-amber-500" />
             <div>
-              <p className="text-yellow-700 font-medium text-sm">Token expirado</p>
+              <p className="text-amber-700 font-medium text-sm">Token expirado</p>
               <p className="text-gray-500 text-sm">Re-autentique nas configurações para renovar o token.</p>
             </div>
             <Link href="/settings" className="ml-auto">

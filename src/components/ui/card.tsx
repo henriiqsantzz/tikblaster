@@ -19,24 +19,24 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(
       <div
         ref={ref}
         className={cn(
-          'rounded-xl bg-white border border-gray-100 shadow-sm',
+          'rounded-xl bg-white border border-[#f0e4e9] shadow-card hover-glow',
           className
         )}
         {...props}
       >
         {(title || subtitle || icon || actions) && (
-          <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              {icon && <div className="text-pink-500 flex-shrink-0">{icon}</div>}
+          <div className="px-5 py-4 border-b border-[#f0e4e9] flex items-center justify-between">
+            <div className="flex items-center gap-2.5">
+              {icon && <div className="text-accent-400">{icon}</div>}
               <div>
-                {title && <h3 className="text-lg font-semibold text-gray-800">{title}</h3>}
-                {subtitle && <p className="text-sm text-gray-500 mt-1">{subtitle}</p>}
+                {title && <h3 className="text-[0.9375rem] font-semibold text-gray-900">{title}</h3>}
+                {subtitle && <p className="text-sm text-gray-500 mt-0.5">{subtitle}</p>}
               </div>
             </div>
             {actions && <div className="flex-shrink-0">{actions}</div>}
           </div>
         )}
-        <div className="px-6 py-4">{children}</div>
+        <div className="px-5 py-4">{children}</div>
       </div>
     );
   }

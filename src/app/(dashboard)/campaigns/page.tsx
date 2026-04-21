@@ -133,12 +133,12 @@ export default function CampaignsPage() {
     return (
       <div className="space-y-8">
         <div>
-          <h1 className="text-xl font-semibold text-gray-900">Campanhas</h1>
+          <h1 className="text-2xl font-bold text-gray-900">Campanhas</h1>
           <p className="text-sm text-gray-500 mt-0.5">Criador em lote de campanhas TikTok</p>
         </div>
-        <div className="bg-white rounded-xl border border-[#e8e8e6] shadow-card text-center py-16 px-6">
-          <div className="w-10 h-10 bg-gray-50 rounded-lg flex items-center justify-center mx-auto mb-4">
-            <AlertTriangle size={20} className="text-gray-400" />
+        <div className="bg-white rounded-xl border border-[#f0e4e9] shadow-card hover-glow text-center py-16 px-6">
+          <div className="w-10 h-10 bg-accent-50 rounded-xl flex items-center justify-center mx-auto mb-4">
+            <AlertTriangle size={20} className="text-accent-400" />
           </div>
           <h2 className="text-xl font-semibold text-gray-900 mb-2">Conta TikTok não conectada</h2>
           <p className="text-sm text-gray-500 mb-6">Conecte sua conta para criar campanhas em lote.</p>
@@ -151,7 +151,7 @@ export default function CampaignsPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-xl font-semibold text-gray-900">Campanhas</h1>
+        <h1 className="text-2xl font-bold text-gray-900">Campanhas</h1>
         <p className="text-sm text-gray-500 mt-0.5">Criador em lote de campanhas TikTok - BC: {activeBC.name || activeBC.bc_id}</p>
       </div>
 
@@ -163,7 +163,7 @@ export default function CampaignsPage() {
               <div>
                 <p className="font-semibold text-gray-700 flex items-center gap-2 mb-2"><Plus size={16} /> Campanha</p>
                 <div className="pl-4">
-                  <div className="px-3 py-2 rounded bg-gray-50 text-xs text-gray-600 border border-[#f0f0ee]">
+                  <div className="px-3 py-2 rounded bg-gray-50 text-xs text-gray-600 border border-[#f0e4e9]">
                     {campaignForm.name || 'Nova Campanha'}
                   </div>
                 </div>
@@ -171,13 +171,13 @@ export default function CampaignsPage() {
               <div>
                 <p className="font-semibold text-gray-700 flex items-center gap-2 mb-2"><ChevronRight size={16} /> Conjunto</p>
                 <div className="pl-4">
-                  <div className="px-3 py-2 rounded bg-gray-50 text-xs text-gray-600 border border-[#f0f0ee]">Conjunto 1</div>
+                  <div className="px-3 py-2 rounded bg-gray-50 text-xs text-gray-600 border border-[#f0e4e9]">Conjunto 1</div>
                 </div>
               </div>
               <div>
                 <p className="font-semibold text-gray-700 flex items-center gap-2 mb-2"><ChevronRight size={16} /> Criativo</p>
                 <div className="pl-4">
-                  <div className="px-3 py-2 rounded bg-gray-50 text-xs text-gray-600 border border-[#f0f0ee]">Criativo 1</div>
+                  <div className="px-3 py-2 rounded bg-gray-50 text-xs text-gray-600 border border-[#f0e4e9]">Criativo 1</div>
                 </div>
               </div>
             </div>
@@ -187,7 +187,7 @@ export default function CampaignsPage() {
         {/* Right Content */}
         <div className="lg:col-span-3 space-y-8">
           {/* Step Indicator */}
-          <div className="flex items-center justify-between bg-white rounded-xl border border-[#e8e8e6] shadow-card px-6 py-4">
+          <div className="flex items-center justify-between bg-white rounded-xl border border-[#f0e4e9] shadow-card px-6 py-4">
             <div className="flex items-center gap-2.5">
               <div className={cn('w-8 h-8 rounded-lg flex items-center justify-center text-sm font-semibold transition-colors', currentStep === 'campaign' ? 'bg-accent-500 text-white' : 'bg-gray-100 text-gray-400')}>1</div>
               <span className={cn('text-sm', currentStep === 'campaign' ? 'text-gray-900 font-medium' : 'text-gray-500')}>Campanha</span>
@@ -338,7 +338,7 @@ export default function CampaignsPage() {
                 </div>
               </Card>
               <Card title="Arquivo Criativo">
-                <div className="bg-gray-50 rounded-lg p-4 border border-[#f0f0ee]">
+                <div className="bg-gray-50 rounded-lg p-4 border border-[#f0e4e9]">
                   <p className="text-sm text-gray-600 mb-2">
                     Para o criativo (vídeo/imagem), faça o upload diretamente na plataforma TikTok Ads Manager e use o video_id ou image_id gerado.
                   </p>
@@ -365,7 +365,7 @@ export default function CampaignsPage() {
       </div>
 
       {/* Bottom Stats Bar */}
-      <div className="bg-white rounded-xl border border-[#e8e8e6] shadow-card px-6 py-4 sticky bottom-0">
+      <div className="bg-white rounded-xl border border-[#f0e4e9] shadow-card px-6 py-4 sticky bottom-0">
         <div className="flex items-center justify-between flex-wrap gap-4">
           <div className="flex items-center gap-6">
             <div>

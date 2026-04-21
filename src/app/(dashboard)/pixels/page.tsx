@@ -55,13 +55,15 @@ export default function PixelsPage() {
     return (
       <div className="space-y-8">
         <div>
-          <h1 className="text-3xl font-bold text-gray-800">Pixels</h1>
-          <p className="text-gray-500 mt-1">Gerencie seus pixels de conversão</p>
+          <h1 className="text-2xl font-bold text-gray-900">Pixels</h1>
+          <p className="text-sm text-gray-500 mt-0.5">Gerencie seus pixels de conversão</p>
         </div>
-        <div className="bg-white rounded-xl border border-gray-100 shadow-sm text-center py-16 px-6">
-          <AlertTriangle size={48} className="mx-auto mb-4 text-yellow-500" />
-          <h2 className="text-xl font-bold text-gray-800 mb-2">Conta TikTok não conectada</h2>
-          <p className="text-gray-500 mb-6">Conecte sua conta para ver seus pixels.</p>
+        <div className="bg-white rounded-xl border border-[#f0e4e9] shadow-card hover-glow text-center py-16 px-6">
+          <div className="w-10 h-10 bg-accent-50 rounded-xl flex items-center justify-center mx-auto mb-4">
+            <AlertTriangle size={20} className="text-accent-400" />
+          </div>
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">Conta TikTok não conectada</h2>
+          <p className="text-sm text-gray-500 mb-6">Conecte sua conta para ver seus pixels.</p>
           <Link href="/settings"><Button size="lg">Ir para Configurações</Button></Link>
         </div>
       </div>
@@ -72,8 +74,8 @@ export default function PixelsPage() {
     <div className="space-y-8">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-800">Pixels</h1>
-          <p className="text-gray-500 mt-1">Gerencie seus pixels de conversão - BC: {activeBC.name || activeBC.bc_id}</p>
+          <h1 className="text-2xl font-bold text-gray-900">Pixels</h1>
+          <p className="text-sm text-gray-500 mt-0.5">Gerencie seus pixels de conversão - BC: {activeBC.name || activeBC.bc_id}</p>
         </div>
         <Button variant="secondary" size="sm" onClick={handleSync} loading={syncing} disabled={syncing}>
           <RefreshCw size={16} className={syncing ? 'animate-spin' : ''} /> Sincronizar Pixels
@@ -90,13 +92,15 @@ export default function PixelsPage() {
       )}
 
       {loading ? (
-        <div className="bg-white rounded-xl border border-gray-100 shadow-sm text-center py-12">
-          <Loader2 className="animate-spin mx-auto mb-3 text-pink-500" size={32} />
+        <div className="bg-white rounded-xl border border-[#f0e4e9] shadow-card text-center py-12">
+          <Loader2 className="animate-spin mx-auto mb-3 text-gray-400" size={32} />
           <p className="text-gray-500">Buscando pixels...</p>
         </div>
       ) : pixels.length === 0 ? (
-        <div className="bg-white rounded-xl border border-gray-100 shadow-sm text-center py-12">
-          <Zap size={48} className="mx-auto mb-4 text-gray-400" />
+        <div className="bg-white rounded-xl border border-[#f0e4e9] shadow-card hover-glow text-center py-12">
+          <div className="w-10 h-10 bg-accent-50 rounded-xl flex items-center justify-center mx-auto mb-4">
+            <Zap size={20} className="text-accent-400" />
+          </div>
           <p className="text-gray-500 text-lg mb-2">Nenhum pixel encontrado</p>
           <p className="text-gray-400 text-sm">Crie pixels no TikTok Ads Manager e sincronize aqui.</p>
         </div>
@@ -106,8 +110,8 @@ export default function PixelsPage() {
             <Card key={pixel.pixel_id || pixel.id} className="hover:shadow-md transition-all">
               <div className="flex items-start justify-between mb-3">
                 <div className="flex items-center gap-2">
-                  <Zap size={20} className="text-pink-500" />
-                  <h3 className="font-semibold text-gray-800">{pixel.pixel_name || pixel.name}</h3>
+                  <Zap size={20} className="text-accent-500" />
+                  <h3 className="font-semibold text-gray-900">{pixel.pixel_name || pixel.name}</h3>
                 </div>
                 <Badge variant={pixel.status === 'ACTIVE' || pixel.status === 'active' ? 'success' : 'warning'}>
                   {pixel.status === 'ACTIVE' || pixel.status === 'active' ? 'Ativo' : pixel.status}
@@ -125,7 +129,7 @@ export default function PixelsPage() {
                   </div>
                 )}
                 {pixel.events && pixel.events.length > 0 && (
-                  <div className="pt-2 border-t border-gray-100">
+                  <div className="pt-2 border-t border-[#f0e4e9]">
                     <p className="text-gray-500 text-xs mb-1">Eventos:</p>
                     {pixel.events.map((event: any, idx: number) => (
                       <div key={idx} className="flex justify-between text-xs">

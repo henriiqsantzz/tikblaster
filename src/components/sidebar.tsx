@@ -11,17 +11,13 @@ import {
   History,
   Menu,
   X,
-  ChevronDown,
-  Smartphone,
   Zap,
   Sliders,
   BarChart3,
   AlertTriangle,
   LogOut,
-  Trophy,
-  Plug,
-  Code,
   Crosshair,
+  Code,
 } from 'lucide-react';
 import { useAppStore } from '@/store/app-store';
 import { createClient } from '@/lib/supabase-client';
@@ -31,7 +27,6 @@ interface NavItem {
   label: string;
   href: string;
   icon: React.ReactNode;
-  badge?: number;
   warning?: boolean;
 }
 
@@ -47,7 +42,6 @@ const Sidebar = () => {
     setBusinessCenters,
     setAdvertisers,
   } = useAppStore();
-  const [bcOpen, setBcOpen] = useState(true);
   const [userEmail, setUserEmail] = useState('');
   const [userName, setUserName] = useState('');
   const [tiktokConnected, setTiktokConnected] = useState(false);
@@ -60,7 +54,7 @@ const Sidebar = () => {
         const { data: { user } } = await supabase.auth.getUser();
         if (user) {
           setUserEmail(user.email || '');
-          setUserName(user.email?.split('@')[0] || 'Seller');
+          setUserName(user.email?.split('@')[0] || 'User');
         }
 
         const res = await fetch('/api/auth/me');
@@ -124,14 +118,18 @@ const Sidebar = () => {
   };
 
   const navItems: NavItem[] = [
-    { label: 'Dashboard', href: '/dashboard', icon: <LayoutDashboard size={20} /> },
-    { label: 'Campanhas', href: '/campaigns', icon: <Megaphone size={20} /> },
-    { label: 'Contas & BCs', href: '/business-centers', icon: <Building2 size={20} /> },
-    { label: 'Pixels', href: '/pixels', icon: <Zap size={20} /> },
-    { label: 'Tracking', href: '/manager', icon: <Crosshair size={20} /> },
-    { label: 'Ranking', href: '/history', icon: <Trophy size={20} /> },
-    { label: 'Integração', href: '/settings', icon: <Plug size={20} />, warning: !tiktokConnected },
-    { label: 'API e Webhooks', href: '/accounts', icon: <Code size={20} /> },
+    { label: 'Dashboard', href: '/dashboard', icon: <LayoutDashboard size={18} /> },
+    { label: 'Campanhas', href: '/campaigns', icon: <Megaphone size={18} /> },
+    { label: 'Business Centers', href: '/business-centers', icon: <Building2 size={18} /> },
+    { label: 'Gerenciador', href: '/manager', icon: <BarChart3 size={18} /> },
+    { label: 'Pixels', href: '/pixels', icon: <Zap size={18} /> },
+    { label: 'Histórico', href: '/history', icon: <History size={18} /> },
+    { label: 'Contas', href: '/accounts', icon: <Code size={18} /> },
+  ];
+
+  const bottomItems: NavItem[] = [
+    { label: 'Integrações', href: '/integrations', icon: <Sliders size={18} />, warning: !tiktokConnected },
+    { label: 'Configurações', href: '/settings', icon: <Settings size={18} /> },
   ];
 
   const isActive = (href: string) => pathname === href || pathname.startsWith(href + '/');
@@ -141,77 +139,101 @@ const Sidebar = () => {
       {/* Mobile toggle */}
       <button
         onClick={toggleSidebar}
-        className="fixed top-4 left-4 z-40 lg:hidden bg-[#2d1226] hover:bg-[#3d1a35] text-white p-2 rounded-lg transition-all shadow-lg"
+        className="fixed top-4 left-4 z-40 lg:hidden bg-sidebar-bg text-white p-2 rounded-lg shadow-pink"
       >
-        {sidebarOpen ? <X size={24} /> : <Menu size={24} />}
+        {sidebarOpen ? <X size={20} /> : <Menu size={20} />}
       </button>
 
       <aside
         className={cn(
-          'fixed left-0 top-0 h-screen flex flex-col z-30 transition-transform duration-300 w-56',
+          'fixed left-0 top-0 h-screen flex flex-col z-30 transition-transform duration-200 w-[220px] bg-gradient-sidebar',
           !sidebarOpen && '-translate-x-full lg:translate-x-0'
         )}
-        style={{
-          background: 'linear-gradient(180deg, #3d1228 0%, #2a0e1e 25%, #1a0a14 50%, #0f0a0d 100%)',
-        }}
       >
         {/* Logo */}
-        <div className="px-5 py-6 flex items-center gap-3">
-          <div className="w-9 h-9 bg-gradient-to-br from-pink-500 to-rose-600 rounded-lg flex items-center justify-center shadow-lg shadow-pink-500/20">
-            <Zap size={18} className="text-white" />
+        <div className="px-4 h-14 flex items-center gap-2.5 border-b border-sidebar-border">
+          <div className="w-7 h-7 bg-gradient-pink rounded-lg flex items-center justify-center shadow-pink">
+            <Zap size={14} className="text-white" />
           </div>
-          <h1 className="font-bold text-lg text-white tracking-tight">ShadowAds</h1>
+          <span className="font-bold text-[15px] text-white tracking-[-0.01em]">ShadowAds</span>
         </div>
 
-        {/* Navigation */}
-        <nav className="flex-1 overflow-y-auto py-2 px-3">
+        {/* Active BC indicator */}
+        {activeBC && (
+          <div className="mx-3 mt-3 px-3 py-2.5 rounded-lg bg-sidebar-hover border border-sidebar-border">
+            <p className="text-2xs text-sidebar-text">Business Center</p>
+            <p className="text-xs font-semibold text-white truncate mt-0.5">{activeBC.name || activeBC.bc_id}</p>
+          </div>
+        )}
+
+        {/* Main Navigation */}
+        <nav className="flex-1 overflow-y-auto py-3 px-3">
           <div className="space-y-0.5">
             {navItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  'flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 text-sm font-medium',
+                  'flex items-center gap-2.5 px-3 py-[7px] rounded-lg text-[13px] font-medium transition-all',
                   isActive(item.href)
-                    ? 'bg-pink-600/30 text-pink-300 border border-pink-500/20'
-                    : 'text-gray-400 hover:bg-white/5 hover:text-gray-200'
+                    ? 'bg-gradient-pink text-white shadow-pink'
+                    : 'text-sidebar-text hover:bg-sidebar-hover hover:text-gray-200'
                 )}
                 onClick={() => {
                   if (window.innerWidth < 1024) toggleSidebar();
                 }}
               >
-                <span className={cn(
-                  isActive(item.href) ? 'text-pink-400' : 'text-gray-500'
-                )}>
+                <span className="flex-shrink-0">
+                  {item.icon}
+                </span>
+                <span>{item.label}</span>
+              </Link>
+            ))}
+          </div>
+
+          {/* Separator + bottom nav */}
+          <div className="mt-4 pt-4 border-t border-sidebar-border space-y-0.5">
+            {bottomItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={cn(
+                  'flex items-center gap-2.5 px-3 py-[7px] rounded-lg text-[13px] font-medium transition-all',
+                  isActive(item.href)
+                    ? 'bg-gradient-pink text-white shadow-pink'
+                    : 'text-sidebar-text hover:bg-sidebar-hover hover:text-gray-200'
+                )}
+                onClick={() => {
+                  if (window.innerWidth < 1024) toggleSidebar();
+                }}
+              >
+                <span className="flex-shrink-0">
                   {item.icon}
                 </span>
                 <span>{item.label}</span>
                 {item.warning && (
-                  <span className="ml-auto">
-                    <AlertTriangle size={14} className="text-yellow-400" />
-                  </span>
+                  <span className="ml-auto w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
                 )}
               </Link>
             ))}
           </div>
         </nav>
 
-        {/* User Info */}
-        <div className="px-4 py-4 border-t border-white/5">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 bg-gradient-to-br from-pink-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-sm">
+        {/* User */}
+        <div className="px-3 py-3 border-t border-sidebar-border">
+          <div className="flex items-center gap-2.5 px-2">
+            <div className="w-7 h-7 rounded-full bg-gradient-pink flex items-center justify-center text-xs font-bold text-white shadow-pink">
               {userName.charAt(0).toUpperCase()}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-gray-200 truncate">{userName}</p>
-              <p className="text-xs text-gray-500 truncate">{userEmail}</p>
+              <p className="text-[13px] font-medium text-gray-300 truncate">{userName}</p>
             </div>
             <button
               onClick={handleLogout}
-              className="p-1.5 hover:bg-white/10 rounded transition-all text-gray-500 hover:text-gray-300"
+              className="p-1 rounded-md text-gray-500 hover:text-accent-400 hover:bg-sidebar-hover transition-colors"
               title="Sair"
             >
-              <LogOut size={16} />
+              <LogOut size={14} />
             </button>
           </div>
         </div>
@@ -220,7 +242,7 @@ const Sidebar = () => {
       {/* Mobile overlay */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 bg-black/50 z-20 lg:hidden"
+          className="fixed inset-0 bg-black/40 z-20 lg:hidden backdrop-blur-sm"
           onClick={toggleSidebar}
         />
       )}

@@ -82,13 +82,15 @@ export default function ManagerPage() {
     return (
       <div className="space-y-8">
         <div>
-          <h1 className="text-3xl font-bold text-gray-800">Gerenciador</h1>
-          <p className="text-gray-500 mt-1">Gerencie suas campanhas, conjuntos e anúncios</p>
+          <h1 className="text-2xl font-bold text-gray-900">Gerenciador</h1>
+          <p className="text-sm text-gray-500 mt-0.5">Gerencie suas campanhas, conjuntos e anúncios</p>
         </div>
-        <div className="bg-white rounded-xl border border-gray-100 shadow-sm text-center py-16 px-6">
-          <AlertTriangle size={48} className="mx-auto mb-4 text-yellow-500" />
-          <h2 className="text-xl font-bold text-gray-800 mb-2">Conta TikTok não conectada</h2>
-          <p className="text-gray-500 mb-6">Conecte sua conta para gerenciar campanhas.</p>
+        <div className="bg-white rounded-xl border border-[#f0e4e9] shadow-card hover-glow text-center py-16 px-6">
+          <div className="w-10 h-10 bg-accent-50 rounded-xl flex items-center justify-center mx-auto mb-4">
+            <AlertTriangle size={20} className="text-accent-400" />
+          </div>
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">Conta TikTok não conectada</h2>
+          <p className="text-sm text-gray-500 mb-6">Conecte sua conta para gerenciar campanhas.</p>
           <Link href="/settings"><Button size="lg">Ir para Configurações</Button></Link>
         </div>
       </div>
@@ -119,8 +121,8 @@ export default function ManagerPage() {
     <div className="space-y-8">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-800">Gerenciador</h1>
-          <p className="text-gray-500 mt-1">BC: {activeBC.name || activeBC.bc_id}</p>
+          <h1 className="text-2xl font-bold text-gray-900">Gerenciador</h1>
+          <p className="text-sm text-gray-500 mt-0.5">BC: {activeBC.name || activeBC.bc_id}</p>
         </div>
       </div>
 
@@ -141,7 +143,7 @@ export default function ManagerPage() {
       </Card>
 
       {selectedRows.length > 0 && (
-        <div className="bg-pink-50 border border-pink-200 rounded-xl px-6 py-4">
+        <div className="bg-gray-50 border border-[#f0e4e9] rounded-xl px-6 py-4">
           <div className="flex items-center justify-between">
             <p className="text-sm text-gray-700">{selectedRows.length} campanha(s) selecionada(s)</p>
             <div className="flex gap-2">
@@ -170,39 +172,39 @@ export default function ManagerPage() {
       )}
 
       {loading ? (
-        <div className="bg-white rounded-xl border border-gray-100 shadow-sm text-center py-12">
-          <Loader2 className="animate-spin mx-auto mb-3 text-pink-500" size={32} />
+        <div className="bg-white rounded-xl border border-[#f0e4e9] shadow-card text-center py-12">
+          <Loader2 className="animate-spin mx-auto mb-3 text-gray-400" size={32} />
           <p className="text-gray-500">Buscando campanhas do TikTok...</p>
         </div>
       ) : filteredCampaigns.length === 0 ? (
-        <div className="bg-white rounded-xl border border-gray-100 shadow-sm text-center py-12">
+        <div className="bg-white rounded-xl border border-[#f0e4e9] shadow-card hover-glow text-center py-12">
           <p className="text-gray-500 text-lg mb-2">Nenhuma campanha encontrada</p>
           <p className="text-gray-400 text-sm">Crie suas primeiras campanhas na aba "Campanhas".</p>
         </div>
       ) : (
         <>
           <Table columns={columns} data={filteredCampaigns.map(c => ({ ...c, id: c.campaign_id }))} selectable onSelectionChange={setSelectedRows} rowIdKey="id" />
-          <div className="bg-white rounded-xl border border-gray-100 shadow-sm px-6 py-4">
+          <div className="bg-white rounded-xl border border-[#f0e4e9] shadow-card px-6 py-4">
             <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-center">
               <div>
                 <p className="text-xs text-gray-500 mb-1">Total Gasto</p>
-                <p className="text-lg font-bold text-gray-800">{formatCurrency(filteredCampaigns.reduce((s, c) => s + c.spend, 0))}</p>
+                <p className="text-lg font-bold text-gray-900">{formatCurrency(filteredCampaigns.reduce((s, c) => s + c.spend, 0))}</p>
               </div>
               <div>
                 <p className="text-xs text-gray-500 mb-1">Impressões</p>
-                <p className="text-lg font-bold text-gray-800">{formatNumber(filteredCampaigns.reduce((s, c) => s + c.impressions, 0))}</p>
+                <p className="text-lg font-bold text-gray-900">{formatNumber(filteredCampaigns.reduce((s, c) => s + c.impressions, 0))}</p>
               </div>
               <div>
                 <p className="text-xs text-gray-500 mb-1">Cliques</p>
-                <p className="text-lg font-bold text-gray-800">{formatNumber(filteredCampaigns.reduce((s, c) => s + c.clicks, 0))}</p>
+                <p className="text-lg font-bold text-gray-900">{formatNumber(filteredCampaigns.reduce((s, c) => s + c.clicks, 0))}</p>
               </div>
               <div>
                 <p className="text-xs text-gray-500 mb-1">Conversões</p>
-                <p className="text-lg font-bold text-pink-600">{formatNumber(filteredCampaigns.reduce((s, c) => s + c.conversions, 0))}</p>
+                <p className="text-lg font-bold text-accent-500">{formatNumber(filteredCampaigns.reduce((s, c) => s + c.conversions, 0))}</p>
               </div>
               <div>
                 <p className="text-xs text-gray-500 mb-1">Campanhas</p>
-                <p className="text-lg font-bold text-gray-800">{filteredCampaigns.length}</p>
+                <p className="text-lg font-bold text-gray-900">{filteredCampaigns.length}</p>
               </div>
             </div>
           </div>

@@ -35,10 +35,9 @@ const Table = React.forwardRef<HTMLDivElement, TableProps<any>>(
 
     const sortedData = [...data].sort((a, b) => {
       if (!sortConfig) return 0;
-      const aValue = a[sortConfig.key];
-      const bValue = b[sortConfig.key];
-      if (aValue === bValue) return 0;
-      if (aValue < bValue) return sortConfig.direction === 'asc' ? -1 : 1;
+      const aVal = a[sortConfig.key], bVal = b[sortConfig.key];
+      if (aVal === bVal) return 0;
+      if (aVal < bVal) return sortConfig.direction === 'asc' ? -1 : 1;
       return sortConfig.direction === 'asc' ? 1 : -1;
     });
 
@@ -47,49 +46,48 @@ const Table = React.forwardRef<HTMLDivElement, TableProps<any>>(
         setSelectedRows(new Set());
         onSelectionChange?.([]);
       } else {
-        const newSelected = new Set(data.map((row) => String(row[rowIdKey])));
-        setSelectedRows(newSelected);
-        onSelectionChange?.(Array.from(newSelected));
+        const all = new Set(data.map((row) => String(row[rowIdKey])));
+        setSelectedRows(all);
+        onSelectionChange?.(Array.from(all));
       }
     };
 
     const handleSelectRow = (id: string) => {
-      const newSelected = new Set(selectedRows);
-      if (newSelected.has(id)) newSelected.delete(id);
-      else newSelected.add(id);
-      setSelectedRows(newSelected);
-      onSelectionChange?.(Array.from(newSelected));
+      const next = new Set(selectedRows);
+      next.has(id) ? next.delete(id) : next.add(id);
+      setSelectedRows(next);
+      onSelectionChange?.(Array.from(next));
     };
 
     return (
-      <div ref={ref} className={cn('overflow-x-auto rounded-lg border border-gray-200', className)}>
+      <div ref={ref} className={cn('overflow-x-auto rounded-xl border border-[#f0e4e9]', className)}>
         <table className="w-full border-collapse">
           <thead>
-            <tr className="border-b border-gray-200 bg-gray-50">
+            <tr className="border-b border-[#f0e4e9]">
               {selectable && (
-                <th className="px-4 py-3 text-left">
+                <th className="px-4 py-2.5 text-left w-10">
                   <input
                     type="checkbox"
                     checked={selectedRows.size === data.length && data.length > 0}
                     onChange={handleSelectAll}
-                    className="w-4 h-4 rounded border border-gray-300 bg-white cursor-pointer accent-pink-500"
+                    className="w-3.5 h-3.5 rounded border-gray-300 text-accent-500 focus:ring-accent-500/20 cursor-pointer"
                   />
                 </th>
               )}
-              {columns.map((column) => (
+              {columns.map((col) => (
                 <th
-                  key={String(column.key)}
-                  onClick={() => handleSort(String(column.key), column.sortable)}
+                  key={String(col.key)}
+                  onClick={() => handleSort(String(col.key), col.sortable)}
                   className={cn(
-                    'px-4 py-3 text-left text-sm font-semibold text-gray-700',
-                    column.sortable && 'cursor-pointer hover:text-gray-900',
-                    column.className
+                    'px-4 py-2.5 text-left text-xs font-medium text-gray-500',
+                    col.sortable && 'cursor-pointer hover:text-gray-700',
+                    col.className
                   )}
                 >
-                  <div className="flex items-center gap-2">
-                    {column.header}
-                    {column.sortable && sortConfig?.key === String(column.key) && (
-                      <span className="text-pink-500">{sortConfig.direction === 'asc' ? '↑' : '↓'}</span>
+                  <div className="flex items-center gap-1">
+                    {col.header}
+                    {col.sortable && sortConfig?.key === String(col.key) && (
+                      <span className="text-accent-500">{sortConfig.direction === 'asc' ? '↑' : '↓'}</span>
                     )}
                   </div>
                 </th>
@@ -99,31 +97,32 @@ const Table = React.forwardRef<HTMLDivElement, TableProps<any>>(
           <tbody>
             {sortedData.map((row, idx) => {
               const rowId = String(row[rowIdKey]);
-              const isSelected = selectedRows.has(rowId);
+              const selected = selectedRows.has(rowId);
               return (
                 <tr
                   key={rowId || idx}
                   onClick={() => onRowClick?.(row)}
                   className={cn(
-                    'border-b border-gray-100 transition-colors',
-                    'hover:bg-gray-50 cursor-pointer',
-                    isSelected && 'bg-pink-50'
+                    'border-b border-[#f0e4e9] last:border-0 transition-colors',
+                    'hover:bg-gray-50',
+                    onRowClick && 'cursor-pointer',
+                    selected && 'bg-accent-50/40'
                   )}
                 >
                   {selectable && (
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-2.5">
                       <input
                         type="checkbox"
-                        checked={isSelected}
+                        checked={selected}
                         onChange={() => handleSelectRow(rowId)}
                         onClick={(e) => e.stopPropagation()}
-                        className="w-4 h-4 rounded border border-gray-300 bg-white cursor-pointer accent-pink-500"
+                        className="w-3.5 h-3.5 rounded border-gray-300 text-accent-500 focus:ring-accent-500/20 cursor-pointer"
                       />
                     </td>
                   )}
-                  {columns.map((column) => (
-                    <td key={String(column.key)} className={cn('px-4 py-3 text-sm text-gray-600', column.className)}>
-                      {column.render ? column.render(row[column.key], row) : row[column.key]}
+                  {columns.map((col) => (
+                    <td key={String(col.key)} className={cn('px-4 py-2.5 text-sm text-gray-700', col.className)}>
+                      {col.render ? col.render(row[col.key], row) : row[col.key]}
                     </td>
                   ))}
                 </tr>
@@ -132,7 +131,7 @@ const Table = React.forwardRef<HTMLDivElement, TableProps<any>>(
           </tbody>
         </table>
         {data.length === 0 && (
-          <div className="px-4 py-8 text-center text-gray-500">No data available</div>
+          <div className="px-4 py-10 text-center text-sm text-gray-400">Nenhum dado disponível</div>
         )}
       </div>
     );

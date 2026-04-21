@@ -1,35 +1,55 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { Badge, Button } from '@/components/ui';
-import { TrendingUp, TrendingDown, DollarSign, Eye, Mouse, Target, BarChart3, RefreshCw, AlertTriangle, Megaphone, Users, Activity, Wifi } from 'lucide-react';
+import { Button } from '@/components/ui';
+import { AlertTriangle, ArrowUpRight, ArrowDownRight, RefreshCw, TrendingUp } from 'lucide-react';
 import { formatCurrency, formatNumber, formatPercent, formatRoas, cn } from '@/lib/utils';
 import { useAppStore } from '@/store/app-store';
 import Link from 'next/link';
 
-const StatCard = ({
-  title, value, loading = false,
+const Metric = ({
+  label, value, change, loading = false, highlight = false,
 }: {
-  title: string; value: string | number; loading?: boolean;
+  label: string; value: string | number; change?: number; loading?: boolean; highlight?: boolean;
 }) => (
-  <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
-    <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">{title}</p>
+  <div className={cn(
+    'rounded-xl border shadow-card p-5 transition-all hover-glow',
+    highlight
+      ? 'bg-gradient-pink text-white border-accent-300'
+      : 'bg-white border-[#f0e4e9]'
+  )}>
+    <p className={cn('text-[13px] mb-1', highlight ? 'text-white/70' : 'text-gray-500')}>{label}</p>
     {loading ? (
-      <div className="h-8 w-20 bg-gray-100 rounded animate-pulse" />
+      <div className={cn('h-7 w-24 rounded-md animate-pulse mt-1', highlight ? 'bg-white/20' : 'bg-gray-100')} />
     ) : (
-      <p className="text-2xl font-bold text-gray-800">{value}</p>
+      <div className="flex items-end gap-2">
+        <p className={cn('text-[22px] font-bold leading-tight', highlight ? 'text-white' : 'text-gray-900')}>{value}</p>
+        {change !== undefined && (
+          <span className={cn(
+            'flex items-center gap-0.5 text-xs font-semibold mb-0.5',
+            highlight
+              ? 'text-white/80'
+              : change >= 0 ? 'text-emerald-600' : 'text-red-500'
+          )}>
+            {change >= 0 ? <ArrowUpRight size={12} /> : <ArrowDownRight size={12} />}
+            {Math.abs(change)}%
+          </span>
+        )}
+      </div>
     )}
   </div>
 );
 
-const AccountRow = ({
-  name, value,
-}: {
-  name: string; value: string;
-}) => (
-  <div className="flex items-center justify-between py-3 border-b border-gray-50 last:border-0">
-    <span className="text-sm text-gray-600">{name}</span>
-    <span className="text-sm font-semibold text-pink-600">{value}</span>
+const AccountRow = ({ name, spend, status }: { name: string; spend: string; status: string }) => (
+  <div className="flex items-center justify-between py-3 border-b border-[#f0e4e9] last:border-0">
+    <div className="flex items-center gap-3">
+      <span className={cn(
+        'w-2 h-2 rounded-full',
+        status === 'active' ? 'bg-emerald-500' : 'bg-amber-400'
+      )} />
+      <span className="text-sm text-gray-700 font-medium">{name}</span>
+    </div>
+    <span className="text-sm font-bold text-gray-900 tabular-nums">{spend}</span>
   </div>
 );
 
@@ -59,31 +79,29 @@ export default function DashboardPage() {
 
   if (!activeBC) {
     return (
-      <div className="space-y-8">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-800">Bem-vindo, Seller! 👋</h1>
-          </div>
-          <div className="bg-gradient-to-r from-pink-500 to-rose-500 text-white text-sm font-semibold px-4 py-2 rounded-full shadow-lg shadow-pink-500/20">
-            Meta Atual: 500k / 1M
-          </div>
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
+          <p className="text-sm text-gray-500 mt-1">Visão geral das suas campanhas</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <StatCard title="Campanhas Ativas" value="0" />
-          <StatCard title="Contas Gerenciadas" value="0" />
-          <StatCard title="Conversões Hoje" value="0" />
-          <StatCard title="Taxa de Tracking" value="0%" />
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+          <Metric label="Campanhas ativas" value="0" />
+          <Metric label="Contas" value="0" />
+          <Metric label="Conversões" value="0" />
+          <Metric label="Tracking" value="0%" />
         </div>
 
-        <div className="bg-white rounded-xl border border-gray-100 p-8 text-center shadow-sm">
-          <AlertTriangle size={48} className="mx-auto mb-4 text-yellow-500" />
-          <h2 className="text-xl font-bold text-gray-800 mb-2">Conta TikTok não conectada</h2>
-          <p className="text-gray-500 mb-6">Conecte sua conta TikTok for Business para ver suas métricas.</p>
+        <div className="bg-white rounded-xl border border-[#f0e4e9] shadow-card p-10 text-center">
+          <div className="w-12 h-12 bg-accent-50 rounded-xl flex items-center justify-center mx-auto mb-4">
+            <AlertTriangle size={22} className="text-accent-500" />
+          </div>
+          <h2 className="text-lg font-bold text-gray-900 mb-1">Conta TikTok não conectada</h2>
+          <p className="text-sm text-gray-500 mb-5 max-w-sm mx-auto">
+            Conecte sua conta TikTok for Business para visualizar métricas e gerenciar campanhas.
+          </p>
           <Link href="/settings">
-            <button className="bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-semibold px-6 py-3 rounded-lg transition-all shadow-lg shadow-pink-500/20">
-              Ir para Configurações
-            </button>
+            <Button size="lg">Conectar conta</Button>
           </Link>
         </div>
       </div>
@@ -97,82 +115,94 @@ export default function DashboardPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-800">Bem-vindo, Seller! 👋</h1>
+          <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
+          <p className="text-sm text-gray-500 mt-0.5">Visão geral do período selecionado</p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           <select
             value={dateRange}
             onChange={(e) => setDateRange(e.target.value)}
-            className="bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:ring-pink-500 focus:border-pink-500 shadow-sm"
+            className="h-9 px-3 bg-white border border-[#f0e4e9] text-gray-700 text-sm rounded-lg hover:border-accent-300 focus:outline-none focus:border-accent-500 focus:ring-2 focus:ring-accent-500/10 transition-colors cursor-pointer font-medium"
           >
             <option value="today">Hoje</option>
-            <option value="3days">3 Dias</option>
-            <option value="7days">7 Dias</option>
-            <option value="30days">30 Dias</option>
+            <option value="3days">Últimos 3 dias</option>
+            <option value="7days">Últimos 7 dias</option>
+            <option value="30days">Últimos 30 dias</option>
           </select>
-          <div className="bg-gradient-to-r from-pink-500 to-rose-500 text-white text-sm font-semibold px-4 py-2 rounded-full shadow-lg shadow-pink-500/20">
-            Meta Atual: 500k / 1M
-          </div>
+          <button
+            onClick={fetchMetrics}
+            className="h-9 w-9 flex items-center justify-center rounded-lg border border-[#f0e4e9] hover:bg-accent-50 hover:border-accent-300 hover:text-accent-600 transition-colors text-gray-500"
+          >
+            <RefreshCw size={15} className={loading ? 'animate-spin' : ''} />
+          </button>
         </div>
       </div>
 
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-xl p-4 flex items-center gap-3">
-          <AlertTriangle size={20} className="text-red-500" />
-          <p className="text-red-600 text-sm">{error}</p>
+        <div className="bg-red-50 border border-red-200 rounded-lg px-4 py-3 flex items-center gap-3">
+          <AlertTriangle size={16} className="text-red-500 flex-shrink-0" />
+          <p className="text-sm text-red-600 flex-1">{error}</p>
           <button
             onClick={fetchMetrics}
-            className="ml-auto text-sm bg-red-100 hover:bg-red-200 text-red-700 px-3 py-1 rounded-lg transition-colors"
+            className="text-sm text-red-600 hover:text-red-700 font-semibold"
           >
             Tentar novamente
           </button>
         </div>
       )}
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard title="Campanhas Ativas" value={formatNumber(m.active_accounts || 38)} loading={loading} />
-        <StatCard title="Contas Gerenciadas" value={formatNumber(m.impressions || 124)} loading={loading} />
-        <StatCard title="Conversões Hoje" value={formatNumber(m.conversions || 1847)} loading={loading} />
-        <StatCard title="Taxa de Tracking" value={formatPercent(m.ctr || 99.8)} loading={loading} />
+      {/* Top metrics */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        <Metric label="Campanhas ativas" value={formatNumber(m.active_accounts || 38)} change={12} loading={loading} highlight />
+        <Metric label="Contas gerenciadas" value={formatNumber(m.impressions || 124)} loading={loading} />
+        <Metric label="Conversões" value={formatNumber(m.conversions || 1847)} change={8} loading={loading} />
+        <Metric label="Taxa de tracking" value={formatPercent(m.ctr || 99.8)} loading={loading} />
       </div>
 
-      {/* Campanhas por Conta */}
-      <div className="bg-white rounded-xl border border-gray-100 p-6 shadow-sm">
-        <h2 className="text-lg font-semibold text-gray-800 mb-4">Campanhas por Conta</h2>
-        <div className="space-y-0">
-          <AccountRow name="BC Principal - Conta 01" value={formatCurrency(12450)} />
-          <AccountRow name="BC Principal - Conta 02" value={formatCurrency(8320)} />
-          <AccountRow name="BC Backup - Conta 03" value={formatCurrency(6780)} />
-          <AccountRow name="BC Escala - Conta 04" value={formatCurrency(4030)} />
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
+        {/* Spend by account */}
+        <div className="lg:col-span-2 bg-white rounded-xl border border-[#f0e4e9] shadow-card hover-glow">
+          <div className="px-5 py-4 border-b border-[#f0e4e9] flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <TrendingUp size={16} className="text-accent-500" />
+              <h2 className="text-[15px] font-bold text-gray-900">Gasto por conta</h2>
+            </div>
+            <span className="text-xs text-gray-400 font-medium">Período atual</span>
+          </div>
+          <div className="px-5 py-2">
+            <AccountRow name="BC Principal — Conta 01" spend={formatCurrency(12450)} status="active" />
+            <AccountRow name="BC Principal — Conta 02" spend={formatCurrency(8320)} status="active" />
+            <AccountRow name="BC Backup — Conta 03" spend={formatCurrency(6780)} status="active" />
+            <AccountRow name="BC Escala — Conta 04" spend={formatCurrency(4030)} status="paused" />
+          </div>
         </div>
-      </div>
 
-      {/* Metrics Detail */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
-          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Gasto Total</p>
-          {loading ? <div className="h-8 w-20 bg-gray-100 rounded animate-pulse" /> : (
-            <p className="text-2xl font-bold text-gray-800">{formatCurrency(m.spend)}</p>
-          )}
-        </div>
-        <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
-          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">CPA Médio</p>
-          {loading ? <div className="h-8 w-20 bg-gray-100 rounded animate-pulse" /> : (
-            <p className="text-2xl font-bold text-gray-800">{formatCurrency(m.cpa)}</p>
-          )}
-        </div>
-        <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
-          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">ROAS</p>
-          {loading ? <div className="h-8 w-20 bg-gray-100 rounded animate-pulse" /> : (
-            <p className="text-2xl font-bold text-pink-600">{formatRoas(m.roas)}</p>
-          )}
-        </div>
-        <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
-          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Cliques</p>
-          {loading ? <div className="h-8 w-20 bg-gray-100 rounded animate-pulse" /> : (
-            <p className="text-2xl font-bold text-gray-800">{formatNumber(m.clicks)}</p>
-          )}
+        {/* Key metrics sidebar */}
+        <div className="space-y-3">
+          <div className="bg-white rounded-xl border border-[#f0e4e9] shadow-card p-5 hover-glow">
+            <p className="text-[13px] text-gray-500 mb-1">Gasto total</p>
+            {loading ? <div className="h-7 w-24 bg-gray-100 rounded-md animate-pulse mt-1" /> : (
+              <p className="text-[22px] font-bold text-gray-900 leading-tight">{formatCurrency(m.spend)}</p>
+            )}
+          </div>
+          <div className="bg-white rounded-xl border border-[#f0e4e9] shadow-card p-5 hover-glow">
+            <p className="text-[13px] text-gray-500 mb-1">CPA médio</p>
+            {loading ? <div className="h-7 w-24 bg-gray-100 rounded-md animate-pulse mt-1" /> : (
+              <p className="text-[22px] font-bold text-gray-900 leading-tight">{formatCurrency(m.cpa)}</p>
+            )}
+          </div>
+          <div className="bg-white rounded-xl border border-[#f0e4e9] shadow-card p-5 hover-glow">
+            <p className="text-[13px] text-gray-500 mb-1">ROAS</p>
+            {loading ? <div className="h-7 w-24 bg-gray-100 rounded-md animate-pulse mt-1" /> : (
+              <p className="text-[22px] font-bold text-accent-500 leading-tight">{formatRoas(m.roas)}</p>
+            )}
+          </div>
+          <div className="bg-white rounded-xl border border-[#f0e4e9] shadow-card p-5 hover-glow">
+            <p className="text-[13px] text-gray-500 mb-1">Cliques</p>
+            {loading ? <div className="h-7 w-24 bg-gray-100 rounded-md animate-pulse mt-1" /> : (
+              <p className="text-[22px] font-bold text-gray-900 leading-tight">{formatNumber(m.clicks)}</p>
+            )}
+          </div>
         </div>
       </div>
     </div>

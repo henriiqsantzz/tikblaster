@@ -70,13 +70,15 @@ export default function AccountsPage() {
     return (
       <div className="space-y-8">
         <div>
-          <h1 className="text-3xl font-bold text-gray-800">Criação de Contas</h1>
-          <p className="text-gray-500 mt-1">Crie contas de anunciantes em lote</p>
+          <h1 className="text-2xl font-bold text-gray-900">Criação de Contas</h1>
+          <p className="text-sm text-gray-500 mt-0.5">Crie contas de anunciantes em lote</p>
         </div>
-        <div className="bg-white rounded-xl border border-gray-100 shadow-sm text-center py-16 px-6">
-          <AlertTriangle size={48} className="mx-auto mb-4 text-yellow-500" />
-          <h2 className="text-xl font-bold text-gray-800 mb-2">Conta TikTok não conectada</h2>
-          <p className="text-gray-500 mb-6">Conecte sua conta para criar contas de anunciantes.</p>
+        <div className="bg-white rounded-xl border border-[#f0e4e9] shadow-card hover-glow text-center py-16 px-6">
+          <div className="w-10 h-10 bg-accent-50 rounded-xl flex items-center justify-center mx-auto mb-4">
+            <AlertTriangle size={20} className="text-accent-400" />
+          </div>
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">Conta TikTok não conectada</h2>
+          <p className="text-sm text-gray-500 mb-6">Conecte sua conta para criar contas de anunciantes.</p>
           <Link href="/settings"><Button size="lg">Ir para Configurações</Button></Link>
         </div>
       </div>
@@ -86,20 +88,20 @@ export default function AccountsPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold text-gray-800">Criação de Contas</h1>
-        <p className="text-gray-500 mt-1">Crie contas de anunciantes em lote</p>
+        <h1 className="text-2xl font-bold text-gray-900">Criação de Contas</h1>
+        <p className="text-sm text-gray-500 mt-0.5">Crie contas de anunciantes em lote</p>
       </div>
 
       <Card title="Novo Lote de Contas" icon={<Building2 size={24} />}>
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
-            <p className="text-sm text-gray-500 mb-2">Business Center</p>
-            <p className="text-lg font-semibold text-gray-800">{activeBC.name || activeBC.bc_id}</p>
+          <div className="bg-gray-50 rounded-lg p-4 border border-[#f0e4e9]">
+            <p className="text-[13px] text-gray-500 mb-2">Business Center</p>
+            <p className="text-lg font-semibold text-gray-900">{activeBC.name || activeBC.bc_id}</p>
             <p className="text-xs text-gray-500 font-mono mt-1">{activeBC.bc_id}</p>
           </div>
 
           <div className="space-y-4">
-            <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wider">Informações da Empresa</h3>
+            <h3 className="text-[13px] text-gray-500">Informações da Empresa</h3>
             <Input label="Nome da Empresa" name="companyName" value={formData.companyName} onChange={handleInputChange} placeholder="Ex: Minha Empresa LTDA" icon={<Building2 size={18} />} required />
             <Input label="CNPJ" name="cnpj" value={formData.cnpj} onChange={handleInputChange} placeholder="XX.XXX.XXX/0001-XX" maxLength={18} />
             <Select label="Segmento Comercial" name="industryId" value={formData.industryId} onChange={handleInputChange} options={[
@@ -113,27 +115,27 @@ export default function AccountsPage() {
             ]} required />
           </div>
 
-          <div className="space-y-4 pt-4 border-t border-gray-100">
-            <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wider">Informações de Contato</h3>
+          <div className="space-y-4 pt-4 border-t border-[#f0e4e9]">
+            <h3 className="text-[13px] text-gray-500">Informações de Contato</h3>
             <Input label="Nome do Contato" name="contactName" value={formData.contactName} onChange={handleInputChange} placeholder="Ex: João Silva" icon={<User size={18} />} required />
             <Input label="Email" name="contactEmail" type="email" value={formData.contactEmail} onChange={handleInputChange} placeholder="email@empresa.com" icon={<Mail size={18} />} required />
             <Input label="Telefone" name="contactPhone" value={formData.contactPhone} onChange={handleInputChange} placeholder="+5511987654321" icon={<Phone size={18} />} required />
           </div>
 
-          <div className="space-y-4 pt-4 border-t border-gray-100">
-            <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wider">Configuração de Lote</h3>
+          <div className="space-y-4 pt-4 border-t border-[#f0e4e9]">
+            <h3 className="text-[13px] text-gray-500">Configuração de Lote</h3>
             <div className="grid grid-cols-2 gap-4">
               <Input label="Quantidade de Contas" name="quantity" type="number" min="1" max="100" value={formData.quantity} onChange={handleInputChange} icon={<Hash size={18} />} required />
               <Input label="Prefixo de Nome" name="namePrefix" value={formData.namePrefix} onChange={handleInputChange} placeholder="Ex: ACC" maxLength={10} />
             </div>
-            <p className="text-xs text-gray-500 bg-gray-50 p-3 rounded-lg border border-gray-100">
+            <p className="text-xs text-gray-500 bg-gray-50 p-3 rounded-lg border border-[#f0e4e9]">
               As contas serão criadas com nomes como: {formData.namePrefix}-001, {formData.namePrefix}-002, etc.
             </p>
           </div>
 
-          <div className="flex gap-3 pt-4 border-t border-gray-100">
+          <div className="flex gap-3 pt-4 border-t border-[#f0e4e9]">
             <Button type="submit" size="lg" className="flex-1" loading={isLoading} disabled={isLoading}>
-              {isLoading ? 'CRIANDO...' : 'CRIAR CONTAS EM LOTE'}
+              {isLoading ? 'Criando...' : 'Criar Contas em Lote'}
             </Button>
           </div>
         </form>
