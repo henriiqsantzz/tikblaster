@@ -17,8 +17,8 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     const base = 'inline-flex items-center justify-center font-semibold rounded-lg transition-all focus-ring disabled:opacity-40 disabled:pointer-events-none';
 
     const variants = {
-      primary: 'bg-gradient-pink text-white hover:bg-gradient-pink-dark hover:shadow-pink active:scale-[0.98] shadow-button',
-      secondary: 'bg-white text-gray-700 border border-gray-200 hover:border-accent-200 hover:text-accent-600 hover:bg-accent-50/30 active:bg-accent-50 shadow-xs',
+      primary: 'bg-accent-500 text-white hover:bg-accent-600 active:bg-accent-700 shadow-button',
+      secondary: 'bg-white text-gray-700 border border-[#f0e4e9] hover:border-accent-300 hover:text-accent-600 hover:bg-accent-50/30 active:bg-accent-50 shadow-xs',
       danger: 'bg-red-500 text-white hover:bg-red-600 active:bg-red-700 shadow-button',
       ghost: 'text-gray-600 hover:bg-accent-50 hover:text-accent-600 active:bg-accent-100',
     };

@@ -2,54 +2,30 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui';
-import { AlertTriangle, ArrowUpRight, ArrowDownRight, RefreshCw, TrendingUp } from 'lucide-react';
+import { AlertTriangle, RefreshCw } from 'lucide-react';
 import { formatCurrency, formatNumber, formatPercent, formatRoas, cn } from '@/lib/utils';
 import { useAppStore } from '@/store/app-store';
 import Link from 'next/link';
 
-const Metric = ({
-  label, value, change, loading = false, highlight = false,
+const MetricCard = ({
+  label, value, loading = false,
 }: {
-  label: string; value: string | number; change?: number; loading?: boolean; highlight?: boolean;
+  label: string; value: string | number; loading?: boolean;
 }) => (
-  <div className={cn(
-    'rounded-xl border shadow-card p-5 transition-all hover-glow',
-    highlight
-      ? 'bg-gradient-pink text-white border-accent-300'
-      : 'bg-white border-[#f0e4e9]'
-  )}>
-    <p className={cn('text-[13px] mb-1', highlight ? 'text-white/70' : 'text-gray-500')}>{label}</p>
+  <div className="bg-white rounded-xl border border-[#f0e4e9] p-5">
+    <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-2">{label}</p>
     {loading ? (
-      <div className={cn('h-7 w-24 rounded-md animate-pulse mt-1', highlight ? 'bg-white/20' : 'bg-gray-100')} />
+      <div className="h-8 w-20 bg-gray-100 rounded animate-pulse" />
     ) : (
-      <div className="flex items-end gap-2">
-        <p className={cn('text-[22px] font-bold leading-tight', highlight ? 'text-white' : 'text-gray-900')}>{value}</p>
-        {change !== undefined && (
-          <span className={cn(
-            'flex items-center gap-0.5 text-xs font-semibold mb-0.5',
-            highlight
-              ? 'text-white/80'
-              : change >= 0 ? 'text-emerald-600' : 'text-red-500'
-          )}>
-            {change >= 0 ? <ArrowUpRight size={12} /> : <ArrowDownRight size={12} />}
-            {Math.abs(change)}%
-          </span>
-        )}
-      </div>
+      <p className="text-2xl font-bold text-gray-900">{value}</p>
     )}
   </div>
 );
 
-const AccountRow = ({ name, spend, status }: { name: string; spend: string; status: string }) => (
-  <div className="flex items-center justify-between py-3 border-b border-[#f0e4e9] last:border-0">
-    <div className="flex items-center gap-3">
-      <span className={cn(
-        'w-2 h-2 rounded-full',
-        status === 'active' ? 'bg-emerald-500' : 'bg-amber-400'
-      )} />
-      <span className="text-sm text-gray-700 font-medium">{name}</span>
-    </div>
-    <span className="text-sm font-bold text-gray-900 tabular-nums">{spend}</span>
+const AccountRow = ({ name, spend }: { name: string; spend: string }) => (
+  <div className="flex items-center justify-between py-3.5 border-b border-[#f0e4e9] last:border-0">
+    <span className="text-sm text-gray-600">{name}</span>
+    <span className="text-sm font-bold text-accent-500 tabular-nums">{spend}</span>
   </div>
 );
 
@@ -81,18 +57,17 @@ export default function DashboardPage() {
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-          <p className="text-sm text-gray-500 mt-1">Visão geral das suas campanhas</p>
+          <h1 className="text-2xl font-bold text-gray-900">Bem-vindo, Seller! 👋</h1>
         </div>
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-          <Metric label="Campanhas ativas" value="0" />
-          <Metric label="Contas" value="0" />
-          <Metric label="Conversões" value="0" />
-          <Metric label="Tracking" value="0%" />
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <MetricCard label="Campanhas Ativas" value="0" />
+          <MetricCard label="Contas Gerenciadas" value="0" />
+          <MetricCard label="Conversões Hoje" value="0" />
+          <MetricCard label="Taxa de Tracking" value="0%" />
         </div>
 
-        <div className="bg-white rounded-xl border border-[#f0e4e9] shadow-card p-10 text-center">
+        <div className="bg-white rounded-xl border border-[#f0e4e9] p-10 text-center">
           <div className="w-12 h-12 bg-accent-50 rounded-xl flex items-center justify-center mx-auto mb-4">
             <AlertTriangle size={22} className="text-accent-500" />
           </div>
@@ -114,24 +89,24 @@ export default function DashboardPage() {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-          <p className="text-sm text-gray-500 mt-0.5">Visão geral do período selecionado</p>
-        </div>
-        <div className="flex items-center gap-2">
+        <h1 className="text-2xl font-bold text-gray-900">Bem-vindo, Seller! 👋</h1>
+        <div className="flex items-center gap-3">
           <select
             value={dateRange}
             onChange={(e) => setDateRange(e.target.value)}
-            className="h-9 px-3 bg-white border border-[#f0e4e9] text-gray-700 text-sm rounded-lg hover:border-accent-300 focus:outline-none focus:border-accent-500 focus:ring-2 focus:ring-accent-500/10 transition-colors cursor-pointer font-medium"
+            className="h-9 px-3 bg-white border border-[#f0e4e9] text-gray-700 text-sm rounded-lg hover:border-accent-300 focus:outline-none focus:border-accent-500 focus:ring-1 focus:ring-accent-500/20 transition-colors cursor-pointer"
           >
             <option value="today">Hoje</option>
             <option value="3days">Últimos 3 dias</option>
             <option value="7days">Últimos 7 dias</option>
             <option value="30days">Últimos 30 dias</option>
           </select>
+          <span className="bg-accent-50 text-accent-600 text-xs font-bold px-3.5 py-1.5 rounded-full border border-accent-200">
+            Meta Atual: 500k / 1M
+          </span>
           <button
             onClick={fetchMetrics}
-            className="h-9 w-9 flex items-center justify-center rounded-lg border border-[#f0e4e9] hover:bg-accent-50 hover:border-accent-300 hover:text-accent-600 transition-colors text-gray-500"
+            className="h-9 w-9 flex items-center justify-center rounded-lg border border-[#f0e4e9] hover:bg-accent-50 hover:border-accent-300 transition-colors text-gray-400 hover:text-accent-500"
           >
             <RefreshCw size={15} className={loading ? 'animate-spin' : ''} />
           </button>
@@ -142,67 +117,58 @@ export default function DashboardPage() {
         <div className="bg-red-50 border border-red-200 rounded-lg px-4 py-3 flex items-center gap-3">
           <AlertTriangle size={16} className="text-red-500 flex-shrink-0" />
           <p className="text-sm text-red-600 flex-1">{error}</p>
-          <button
-            onClick={fetchMetrics}
-            className="text-sm text-red-600 hover:text-red-700 font-semibold"
-          >
+          <button onClick={fetchMetrics} className="text-sm text-red-600 hover:text-red-700 font-semibold">
             Tentar novamente
           </button>
         </div>
       )}
 
-      {/* Top metrics */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        <Metric label="Campanhas ativas" value={formatNumber(m.active_accounts || 38)} change={12} loading={loading} highlight />
-        <Metric label="Contas gerenciadas" value={formatNumber(m.impressions || 124)} loading={loading} />
-        <Metric label="Conversões" value={formatNumber(m.conversions || 1847)} change={8} loading={loading} />
-        <Metric label="Taxa de tracking" value={formatPercent(m.ctr || 99.8)} loading={loading} />
+      {/* Metric cards */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <MetricCard label="Campanhas Ativas" value={formatNumber(m.active_accounts || 38)} loading={loading} />
+        <MetricCard label="Contas Gerenciadas" value={formatNumber(m.impressions || 124)} loading={loading} />
+        <MetricCard label="Conversões Hoje" value={formatNumber(m.conversions || 1847)} loading={loading} />
+        <MetricCard label="Taxa de Tracking" value={formatPercent(m.ctr || 99.8)} loading={loading} />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
-        {/* Spend by account */}
-        <div className="lg:col-span-2 bg-white rounded-xl border border-[#f0e4e9] shadow-card hover-glow">
-          <div className="px-5 py-4 border-b border-[#f0e4e9] flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <TrendingUp size={16} className="text-accent-500" />
-              <h2 className="text-[15px] font-bold text-gray-900">Gasto por conta</h2>
-            </div>
-            <span className="text-xs text-gray-400 font-medium">Período atual</span>
-          </div>
-          <div className="px-5 py-2">
-            <AccountRow name="BC Principal — Conta 01" spend={formatCurrency(12450)} status="active" />
-            <AccountRow name="BC Principal — Conta 02" spend={formatCurrency(8320)} status="active" />
-            <AccountRow name="BC Backup — Conta 03" spend={formatCurrency(6780)} status="active" />
-            <AccountRow name="BC Escala — Conta 04" spend={formatCurrency(4030)} status="paused" />
-          </div>
+      {/* Campaigns by account */}
+      <div className="bg-white rounded-xl border border-[#f0e4e9]">
+        <div className="px-6 py-4 border-b border-[#f0e4e9]">
+          <h2 className="text-base font-bold text-gray-900">Campanhas por Conta</h2>
         </div>
+        <div className="px-6">
+          <AccountRow name="BC Principal - Conta 01" spend={formatCurrency(12450)} />
+          <AccountRow name="BC Principal - Conta 02" spend={formatCurrency(8320)} />
+          <AccountRow name="BC Backup - Conta 03" spend={formatCurrency(6780)} />
+          <AccountRow name="BC Escala - Conta 04" spend={formatCurrency(4030)} />
+        </div>
+      </div>
 
-        {/* Key metrics sidebar */}
-        <div className="space-y-3">
-          <div className="bg-white rounded-xl border border-[#f0e4e9] shadow-card p-5 hover-glow">
-            <p className="text-[13px] text-gray-500 mb-1">Gasto total</p>
-            {loading ? <div className="h-7 w-24 bg-gray-100 rounded-md animate-pulse mt-1" /> : (
-              <p className="text-[22px] font-bold text-gray-900 leading-tight">{formatCurrency(m.spend)}</p>
-            )}
-          </div>
-          <div className="bg-white rounded-xl border border-[#f0e4e9] shadow-card p-5 hover-glow">
-            <p className="text-[13px] text-gray-500 mb-1">CPA médio</p>
-            {loading ? <div className="h-7 w-24 bg-gray-100 rounded-md animate-pulse mt-1" /> : (
-              <p className="text-[22px] font-bold text-gray-900 leading-tight">{formatCurrency(m.cpa)}</p>
-            )}
-          </div>
-          <div className="bg-white rounded-xl border border-[#f0e4e9] shadow-card p-5 hover-glow">
-            <p className="text-[13px] text-gray-500 mb-1">ROAS</p>
-            {loading ? <div className="h-7 w-24 bg-gray-100 rounded-md animate-pulse mt-1" /> : (
-              <p className="text-[22px] font-bold text-accent-500 leading-tight">{formatRoas(m.roas)}</p>
-            )}
-          </div>
-          <div className="bg-white rounded-xl border border-[#f0e4e9] shadow-card p-5 hover-glow">
-            <p className="text-[13px] text-gray-500 mb-1">Cliques</p>
-            {loading ? <div className="h-7 w-24 bg-gray-100 rounded-md animate-pulse mt-1" /> : (
-              <p className="text-[22px] font-bold text-gray-900 leading-tight">{formatNumber(m.clicks)}</p>
-            )}
-          </div>
+      {/* Bottom metrics */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="bg-white rounded-xl border border-[#f0e4e9] p-5">
+          <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-2">Gasto Total</p>
+          {loading ? <div className="h-8 w-20 bg-gray-100 rounded animate-pulse" /> : (
+            <p className="text-2xl font-bold text-gray-900">{formatCurrency(m.spend)}</p>
+          )}
+        </div>
+        <div className="bg-white rounded-xl border border-[#f0e4e9] p-5">
+          <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-2">CPA Médio</p>
+          {loading ? <div className="h-8 w-20 bg-gray-100 rounded animate-pulse" /> : (
+            <p className="text-2xl font-bold text-gray-900">{formatCurrency(m.cpa)}</p>
+          )}
+        </div>
+        <div className="bg-white rounded-xl border border-[#f0e4e9] p-5">
+          <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-2">ROAS</p>
+          {loading ? <div className="h-8 w-20 bg-gray-100 rounded animate-pulse" /> : (
+            <p className="text-2xl font-bold text-accent-500">{formatRoas(m.roas)}</p>
+          )}
+        </div>
+        <div className="bg-white rounded-xl border border-[#f0e4e9] p-5">
+          <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-2">Cliques</p>
+          {loading ? <div className="h-8 w-20 bg-gray-100 rounded animate-pulse" /> : (
+            <p className="text-2xl font-bold text-gray-900">{formatNumber(m.clicks)}</p>
+          )}
         </div>
       </div>
     </div>

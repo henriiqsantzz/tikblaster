@@ -9,7 +9,7 @@ export default function DashboardLayout({
   return (
     <div className="flex h-screen bg-[#faf5f7]">
       <Sidebar />
-      <div className="flex-1 flex flex-col w-full lg:w-[calc(100%-220px)] lg:ml-[220px]">
+      <div className="flex-1 flex flex-col w-full lg:w-[calc(100%-200px)] lg:ml-[200px]">
         <main className="flex-1 overflow-y-auto">
           <div className="max-w-6xl mx-auto px-6 py-8">
             {children}

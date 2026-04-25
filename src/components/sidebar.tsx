@@ -14,10 +14,9 @@ import {
   Zap,
   Sliders,
   BarChart3,
-  AlertTriangle,
   LogOut,
-  Crosshair,
   Code,
+  Crosshair,
 } from 'lucide-react';
 import { useAppStore } from '@/store/app-store';
 import { createClient } from '@/lib/supabase-client';
@@ -27,7 +26,6 @@ interface NavItem {
   label: string;
   href: string;
   icon: React.ReactNode;
-  warning?: boolean;
 }
 
 const Sidebar = () => {
@@ -120,16 +118,12 @@ const Sidebar = () => {
   const navItems: NavItem[] = [
     { label: 'Dashboard', href: '/dashboard', icon: <LayoutDashboard size={18} /> },
     { label: 'Campanhas', href: '/campaigns', icon: <Megaphone size={18} /> },
-    { label: 'Business Centers', href: '/business-centers', icon: <Building2 size={18} /> },
-    { label: 'Gerenciador', href: '/manager', icon: <BarChart3 size={18} /> },
+    { label: 'Contas & BCs', href: '/business-centers', icon: <Building2 size={18} /> },
     { label: 'Pixels', href: '/pixels', icon: <Zap size={18} /> },
-    { label: 'Histórico', href: '/history', icon: <History size={18} /> },
-    { label: 'Contas', href: '/accounts', icon: <Code size={18} /> },
-  ];
-
-  const bottomItems: NavItem[] = [
-    { label: 'Integrações', href: '/integrations', icon: <Sliders size={18} />, warning: !tiktokConnected },
-    { label: 'Configurações', href: '/settings', icon: <Settings size={18} /> },
+    { label: 'Tracking', href: '/manager', icon: <Crosshair size={18} /> },
+    { label: 'Ranking', href: '/history', icon: <BarChart3 size={18} /> },
+    { label: 'Integração', href: '/integrations', icon: <Sliders size={18} /> },
+    { label: 'API e Webhooks', href: '/accounts', icon: <Code size={18} /> },
   ];
 
   const isActive = (href: string) => pathname === href || pathname.startsWith(href + '/');
@@ -139,98 +133,73 @@ const Sidebar = () => {
       {/* Mobile toggle */}
       <button
         onClick={toggleSidebar}
-        className="fixed top-4 left-4 z-40 lg:hidden bg-sidebar-bg text-white p-2 rounded-lg shadow-pink"
+        className="fixed top-4 left-4 z-40 lg:hidden bg-wine-900 text-white p-2 rounded-lg"
       >
         {sidebarOpen ? <X size={20} /> : <Menu size={20} />}
       </button>
 
       <aside
         className={cn(
-          'fixed left-0 top-0 h-screen flex flex-col z-30 transition-transform duration-200 w-[220px] bg-gradient-sidebar',
+          'fixed left-0 top-0 h-screen flex flex-col z-30 transition-transform duration-200 w-[200px] bg-gradient-sidebar',
           !sidebarOpen && '-translate-x-full lg:translate-x-0'
         )}
       >
         {/* Logo */}
-        <div className="px-4 h-14 flex items-center gap-2.5 border-b border-sidebar-border">
-          <div className="w-7 h-7 bg-gradient-pink rounded-lg flex items-center justify-center shadow-pink">
+        <div className="px-5 h-14 flex items-center gap-2.5">
+          <div className="w-7 h-7 bg-accent-500 rounded-lg flex items-center justify-center">
             <Zap size={14} className="text-white" />
           </div>
-          <span className="font-bold text-[15px] text-white tracking-[-0.01em]">ShadowAds</span>
+          <span className="font-bold text-[15px] text-white">ShadowAds</span>
         </div>
 
-        {/* Active BC indicator */}
-        {activeBC && (
-          <div className="mx-3 mt-3 px-3 py-2.5 rounded-lg bg-sidebar-hover border border-sidebar-border">
-            <p className="text-2xs text-sidebar-text">Business Center</p>
-            <p className="text-xs font-semibold text-white truncate mt-0.5">{activeBC.name || activeBC.bc_id}</p>
-          </div>
-        )}
-
-        {/* Main Navigation */}
-        <nav className="flex-1 overflow-y-auto py-3 px-3">
+        {/* Navigation */}
+        <nav className="flex-1 overflow-y-auto py-2 px-3">
           <div className="space-y-0.5">
             {navItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  'flex items-center gap-2.5 px-3 py-[7px] rounded-lg text-[13px] font-medium transition-all',
+                  'flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium transition-all',
                   isActive(item.href)
-                    ? 'bg-gradient-pink text-white shadow-pink'
-                    : 'text-sidebar-text hover:bg-sidebar-hover hover:text-gray-200'
+                    ? 'bg-accent-500 text-white'
+                    : 'text-sidebar-text hover:bg-sidebar-hover hover:text-white'
                 )}
                 onClick={() => {
                   if (window.innerWidth < 1024) toggleSidebar();
                 }}
               >
-                <span className="flex-shrink-0">
-                  {item.icon}
-                </span>
+                <span className="flex-shrink-0">{item.icon}</span>
                 <span>{item.label}</span>
-              </Link>
-            ))}
-          </div>
-
-          {/* Separator + bottom nav */}
-          <div className="mt-4 pt-4 border-t border-sidebar-border space-y-0.5">
-            {bottomItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={cn(
-                  'flex items-center gap-2.5 px-3 py-[7px] rounded-lg text-[13px] font-medium transition-all',
-                  isActive(item.href)
-                    ? 'bg-gradient-pink text-white shadow-pink'
-                    : 'text-sidebar-text hover:bg-sidebar-hover hover:text-gray-200'
-                )}
-                onClick={() => {
-                  if (window.innerWidth < 1024) toggleSidebar();
-                }}
-              >
-                <span className="flex-shrink-0">
-                  {item.icon}
-                </span>
-                <span>{item.label}</span>
-                {item.warning && (
-                  <span className="ml-auto w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
-                )}
               </Link>
             ))}
           </div>
         </nav>
 
-        {/* User */}
+        {/* Settings + User */}
         <div className="px-3 py-3 border-t border-sidebar-border">
-          <div className="flex items-center gap-2.5 px-2">
-            <div className="w-7 h-7 rounded-full bg-gradient-pink flex items-center justify-center text-xs font-bold text-white shadow-pink">
+          <Link
+            href="/settings"
+            className={cn(
+              'flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium transition-all mb-2',
+              isActive('/settings')
+                ? 'bg-accent-500 text-white'
+                : 'text-sidebar-text hover:bg-sidebar-hover hover:text-white'
+            )}
+          >
+            <Settings size={18} />
+            <span>Configurações</span>
+          </Link>
+          <div className="flex items-center gap-2.5 px-3 py-1">
+            <div className="w-7 h-7 rounded-full bg-accent-500/30 border border-accent-500/40 flex items-center justify-center text-xs font-bold text-accent-300">
               {userName.charAt(0).toUpperCase()}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-[13px] font-medium text-gray-300 truncate">{userName}</p>
+              <p className="text-[12px] font-medium text-sidebar-text truncate">{userName}</p>
             </div>
             <button
               onClick={handleLogout}
-              className="p-1 rounded-md text-gray-500 hover:text-accent-400 hover:bg-sidebar-hover transition-colors"
+              className="p-1 rounded-md text-sidebar-text hover:text-white hover:bg-sidebar-hover transition-colors"
               title="Sair"
             >
               <LogOut size={14} />
@@ -242,7 +211,7 @@ const Sidebar = () => {
       {/* Mobile overlay */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 bg-black/40 z-20 lg:hidden backdrop-blur-sm"
+          className="fixed inset-0 bg-black/40 z-20 lg:hidden"
           onClick={toggleSidebar}
         />
       )}

@@ -19,7 +19,7 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(
       <div
         ref={ref}
         className={cn(
-          'rounded-xl bg-white border border-[#f0e4e9] shadow-card hover-glow',
+          'rounded-xl bg-white border border-[#f0e4e9]',
           className
         )}
         {...props}
@@ -29,7 +29,7 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(
             <div className="flex items-center gap-2.5">
               {icon && <div className="text-accent-400">{icon}</div>}
               <div>
-                {title && <h3 className="text-[0.9375rem] font-semibold text-gray-900">{title}</h3>}
+                {title && <h3 className="text-[0.9375rem] font-bold text-gray-900">{title}</h3>}
                 {subtitle && <p className="text-sm text-gray-500 mt-0.5">{subtitle}</p>}
               </div>
             </div>
